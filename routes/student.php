@@ -12,5 +12,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'student'])->prefix('student')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
+    Route::get('/courses', [DashboardController::class, 'courses'])->name('student.courses');
+    Route::get('/courses/{id}', [DashboardController::class, 'courseShow'])->name('student.courses.show');
+    Route::get('/profile', [DashboardController::class, 'profile'])->name('student.profile');
     Route::post('/logout', [AuthController::class, 'logout'])->name('student.logout');
 });
