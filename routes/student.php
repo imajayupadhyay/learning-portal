@@ -3,6 +3,7 @@
 use App\Http\Controllers\Student\AuthController;
 use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\GoalController;
+use App\Http\Controllers\Student\TodoController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -24,6 +25,13 @@ Route::middleware(['auth', 'student'])->prefix('student')->group(function () {
 
     // Lesson completion
     Route::post('/lessons/toggle-complete', [GoalController::class, 'toggleLessonComplete'])->name('student.lessons.toggle');
+
+    // Todos
+    Route::get('/todos', [TodoController::class, 'index'])->name('student.todos');
+    Route::post('/todos', [TodoController::class, 'store'])->name('student.todos.store');
+    Route::put('/todos/{todo}', [TodoController::class, 'update'])->name('student.todos.update');
+    Route::patch('/todos/{todo}/toggle', [TodoController::class, 'toggleComplete'])->name('student.todos.toggle');
+    Route::delete('/todos/{todo}', [TodoController::class, 'destroy'])->name('student.todos.destroy');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('student.logout');
 });
