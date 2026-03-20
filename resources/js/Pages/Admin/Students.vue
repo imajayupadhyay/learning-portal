@@ -34,24 +34,46 @@
                             <tr class="border-b border-neutral-100">
                                 <th class="text-left px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Student</th>
                                 <th class="text-left px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Email</th>
+                                <th class="text-left px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Status</th>
                                 <th class="text-left px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Joined</th>
                                 <th class="text-right px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="student in students" :key="student.id" class="border-b border-neutral-50 hover:bg-red-50/30 transition-colors group">
+                            <tr v-for="student in students" :key="student.id"
+                                :class="[!student.is_approved ? 'bg-amber-50/40' : '']"
+                                class="border-b border-neutral-50 hover:bg-red-50/30 transition-colors group">
                                 <td class="px-8 py-5">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-600 text-[10px] font-black shrink-0">
+                                        <div :class="student.is_approved ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'"
+                                            class="w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-black shrink-0">
                                             {{ student.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) }}
                                         </div>
                                         <span class="font-bold text-sm">{{ student.name }}</span>
                                     </div>
                                 </td>
                                 <td class="px-8 py-5 text-sm text-neutral-500">{{ student.email }}</td>
+                                <td class="px-8 py-5">
+                                    <span v-if="student.is_approved"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                                        <CheckCircle class="w-3 h-3" /> Approved
+                                    </span>
+                                    <span v-else
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                                        <Clock class="w-3 h-3" /> Pending
+                                    </span>
+                                </td>
                                 <td class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-neutral-400">{{ student.created_at }}</td>
                                 <td class="px-8 py-5">
                                     <div class="flex items-center justify-end gap-2">
+                                        <button v-if="!student.is_approved" @click="approveStudent(student.id)"
+                                            class="flex items-center gap-1.5 px-3 py-2 bg-green-50 hover:bg-green-100 rounded-xl text-[9px] font-black uppercase tracking-widest text-green-700 transition-colors">
+                                            <CheckCircle class="w-3.5 h-3.5" /> Approve
+                                        </button>
+                                        <button v-else @click="rejectStudent(student.id)"
+                                            class="flex items-center gap-1.5 px-3 py-2 bg-neutral-50 hover:bg-amber-50 rounded-xl text-[9px] font-black uppercase tracking-widest text-neutral-400 hover:text-amber-700 transition-colors">
+                                            <XCircle class="w-3.5 h-3.5" /> Revoke
+                                        </button>
                                         <button @click="openEdit(student)" class="p-2.5 hover:bg-neutral-100 rounded-xl transition-colors">
                                             <Pencil class="w-4 h-4 text-neutral-400" />
                                         </button>
@@ -131,7 +153,7 @@
 import { ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { UserPlus, Search, Pencil, Trash2, Users, X } from 'lucide-vue-next';
+import { UserPlus, Search, Pencil, Trash2, Users, X, CheckCircle, XCircle, Clock } from 'lucide-vue-next';
 
 const props = defineProps({
     students: Array,
@@ -188,6 +210,16 @@ const submitForm = () => {
             preserveScroll: true,
             onSuccess: () => closeModal(),
         });
+    }
+};
+
+const approveStudent = (id) => {
+    router.patch(`/admin/students/${id}/approve`, {}, { preserveScroll: true });
+};
+
+const rejectStudent = (id) => {
+    if (confirm('Revoke this student\'s access? They will not be able to log in.')) {
+        router.patch(`/admin/students/${id}/reject`, {}, { preserveScroll: true });
     }
 };
 

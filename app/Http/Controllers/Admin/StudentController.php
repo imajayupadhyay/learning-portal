@@ -29,6 +29,7 @@ class StudentController extends Controller
                 'id' => $student->id,
                 'name' => $student->name,
                 'email' => $student->email,
+                'is_approved' => (bool) $student->is_approved,
                 'created_at' => $student->created_at->format('M d, Y'),
             ];
         });
@@ -52,6 +53,7 @@ class StudentController extends Controller
             'email' => $request->email,
             'role' => 'student',
             'password' => Hash::make($request->password),
+            'is_approved' => true,
         ]);
 
         return back();
@@ -77,6 +79,28 @@ class StudentController extends Controller
         if ($request->filled('password')) {
             $student->update(['password' => Hash::make($request->password)]);
         }
+
+        return back();
+    }
+
+    public function approve(User $student)
+    {
+        if ($student->role !== 'student') {
+            abort(403);
+        }
+
+        $student->update(['is_approved' => true]);
+
+        return back();
+    }
+
+    public function reject(User $student)
+    {
+        if ($student->role !== 'student') {
+            abort(403);
+        }
+
+        $student->update(['is_approved' => false]);
 
         return back();
     }

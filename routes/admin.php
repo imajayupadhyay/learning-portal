@@ -20,6 +20,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/students', [StudentController::class, 'store'])->name('admin.students.store');
     Route::put('/students/{student}', [StudentController::class, 'update'])->name('admin.students.update');
     Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
+    Route::patch('/students/{student}/approve', [StudentController::class, 'approve'])->name('admin.students.approve');
+    Route::patch('/students/{student}/reject', [StudentController::class, 'reject'])->name('admin.students.reject');
 
     // Courses CRUD
     Route::get('/courses', [CourseController::class, 'index'])->name('admin.courses');

@@ -25,6 +25,18 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(array_merge($request->only('email', 'password'), ['role' => 'student']), $request->boolean('remember'))) {
+            $user = Auth::user();
+
+            if (!$user->is_approved) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'approval' => 'Your account is pending approval. Please wait for an administrator to approve your registration.',
+                ]);
+            }
+
             $request->session()->regenerate();
 
             return redirect()->intended('/student/dashboard');
@@ -51,16 +63,15 @@ class AuthController extends Controller
             ]);
         }
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => 'student',
             'password' => Hash::make($request->password),
+            'is_approved' => false,
         ]);
 
-        Auth::login($user);
-
-        return redirect('/student/dashboard');
+        return back()->with('registered', 'Your registration is successful! Please wait for an administrator to approve your account before you can log in.');
     }
 
     public function logout(Request $request)

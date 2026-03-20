@@ -13,6 +13,32 @@
                 <p class="text-neutral-500 mt-2 text-sm">Access your learning portal</p>
             </div>
 
+            <!-- Registration Pending Message -->
+            <div v-if="registeredMessage" class="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <div>
+                        <p class="text-sm font-bold text-amber-800">Registration Pending</p>
+                        <p class="text-sm text-amber-700 mt-1">{{ registeredMessage }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approval Error Message -->
+            <div v-if="loginForm.errors.approval" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <p class="text-sm font-bold text-red-800">Account Not Approved</p>
+                        <p class="text-sm text-red-700 mt-1">{{ loginForm.errors.approval }}</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab Switcher -->
             <div class="flex bg-red-50 rounded-xl p-1 mb-8">
                 <button
@@ -197,10 +223,12 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
 
+const page = usePage();
 const activeTab = ref('login');
+const registeredMessage = computed(() => page.props.flash?.registered || null);
 const showLoginPassword = ref(false);
 const showRegPassword = ref(false);
 

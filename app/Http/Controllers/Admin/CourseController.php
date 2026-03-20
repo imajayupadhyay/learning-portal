@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CourseController extends Controller
@@ -47,10 +48,20 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
             'instructor' => 'required|string|max:255',
-            'image' => 'nullable|string|max:500',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url' => 'nullable|string|max:500',
         ]);
 
-        Course::create($request->only('title', 'description', 'instructor', 'image'));
+        $data = $request->only('title', 'description', 'instructor');
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('courses', 'public');
+            $data['image'] = '/storage/' . $path;
+        } elseif ($request->filled('image_url')) {
+            $data['image'] = $request->image_url;
+        }
+
+        Course::create($data);
 
         return back();
     }
@@ -61,16 +72,34 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
             'instructor' => 'required|string|max:255',
-            'image' => 'nullable|string|max:500',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url' => 'nullable|string|max:500',
         ]);
 
-        $course->update($request->only('title', 'description', 'instructor', 'image'));
+        $data = $request->only('title', 'description', 'instructor');
+
+        if ($request->hasFile('image_file')) {
+            // Delete old uploaded image if exists
+            if ($course->image && str_starts_with($course->image, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $course->image));
+            }
+            $path = $request->file('image_file')->store('courses', 'public');
+            $data['image'] = '/storage/' . $path;
+        } elseif ($request->filled('image_url')) {
+            $data['image'] = $request->image_url;
+        }
+
+        $course->update($data);
 
         return back();
     }
 
     public function destroy(Course $course)
     {
+        if ($course->image && str_starts_with($course->image, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $course->image));
+        }
+
         $course->delete();
 
         return back();

@@ -98,33 +98,75 @@
                                 <input v-model="form.title" type="text" required
                                     class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
                                     placeholder="e.g. Docker Mastery" />
-                                <p v-if="form.errors.title" class="text-sm text-red-500">{{ form.errors.title }}</p>
+                                <p v-if="formErrors.title" class="text-sm text-red-500">{{ formErrors.title }}</p>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Description</label>
                                 <textarea v-model="form.description" rows="3"
                                     class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all resize-none"
                                     placeholder="Brief course description..."></textarea>
-                                <p v-if="form.errors.description" class="text-sm text-red-500">{{ form.errors.description }}</p>
+                                <p v-if="formErrors.description" class="text-sm text-red-500">{{ formErrors.description }}</p>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Instructor *</label>
                                 <input v-model="form.instructor" type="text" required
                                     class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
                                     placeholder="Instructor name" />
-                                <p v-if="form.errors.instructor" class="text-sm text-red-500">{{ form.errors.instructor }}</p>
+                                <p v-if="formErrors.instructor" class="text-sm text-red-500">{{ formErrors.instructor }}</p>
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Image URL</label>
-                                <input v-model="form.image" type="text"
-                                    class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
-                                    placeholder="https://example.com/image.jpg" />
-                                <p v-if="form.errors.image" class="text-sm text-red-500">{{ form.errors.image }}</p>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Course Image</label>
+                                <!-- Toggle -->
+                                <div class="flex bg-neutral-100 rounded-xl p-1 gap-1">
+                                    <button type="button" @click="imageMode = 'upload'"
+                                        :class="imageMode === 'upload' ? 'bg-white shadow-sm text-red-600' : 'text-neutral-400 hover:text-neutral-600'"
+                                        class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">
+                                        <Upload class="w-3.5 h-3.5" /> Upload
+                                    </button>
+                                    <button type="button" @click="imageMode = 'url'"
+                                        :class="imageMode === 'url' ? 'bg-white shadow-sm text-red-600' : 'text-neutral-400 hover:text-neutral-600'"
+                                        class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">
+                                        <LinkIcon class="w-3.5 h-3.5" /> URL
+                                    </button>
+                                </div>
+                                <!-- Upload -->
+                                <div v-if="imageMode === 'upload'">
+                                    <div v-if="imagePreview && !form.image_file && editing" class="relative mb-3">
+                                        <img :src="imagePreview" class="w-full h-32 object-cover rounded-2xl" />
+                                        <span class="absolute top-2 left-2 px-2 py-1 bg-white/90 rounded-lg text-[9px] font-black uppercase tracking-widest text-neutral-500">Current Image</span>
+                                    </div>
+                                    <label class="block w-full cursor-pointer">
+                                        <div v-if="form.image_file" class="relative">
+                                            <img :src="imagePreview" class="w-full h-32 object-cover rounded-2xl" />
+                                            <button type="button" @click.prevent="removeImage" class="absolute top-2 right-2 p-1.5 bg-white rounded-lg shadow-md hover:bg-red-50 transition-colors">
+                                                <X class="w-3.5 h-3.5 text-red-600" />
+                                            </button>
+                                        </div>
+                                        <div v-else class="border-2 border-dashed border-neutral-200 hover:border-red-300 rounded-2xl py-8 flex flex-col items-center gap-3 transition-colors">
+                                            <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
+                                                <Upload class="w-5 h-5 text-red-400" />
+                                            </div>
+                                            <div class="text-center">
+                                                <p class="text-xs font-bold text-neutral-500">Click to upload image</p>
+                                                <p class="text-[10px] text-neutral-400 mt-1">JPG, PNG, WebP (max 2MB)</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onFileChange" />
+                                    </label>
+                                    <p v-if="formErrors.image_file" class="text-sm text-red-500 mt-1">{{ formErrors.image_file }}</p>
+                                </div>
+                                <!-- URL -->
+                                <div v-else>
+                                    <input v-model="form.image_url" type="text"
+                                        class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
+                                        placeholder="https://example.com/image.jpg" />
+                                    <p v-if="formErrors.image_url" class="text-sm text-red-500 mt-1">{{ formErrors.image_url }}</p>
+                                </div>
                             </div>
                             <div class="flex items-center gap-4 pt-2">
-                                <button type="submit" :disabled="form.processing"
+                                <button type="submit" :disabled="processing"
                                     class="flex-1 py-4 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-xl hover:shadow-red-600/20 transition-all disabled:opacity-50">
-                                    {{ form.processing ? 'Saving...' : editing ? 'Save Changes' : 'Add Course' }}
+                                    {{ processing ? 'Saving...' : editing ? 'Save Changes' : 'Add Course' }}
                                 </button>
                                 <button type="button" @click="closeModal"
                                     class="px-8 py-4 bg-neutral-100 text-neutral-500 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-neutral-200 transition-all">
@@ -143,7 +185,7 @@
 import { ref } from 'vue';
 import { router, useForm, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Plus, Search, BookOpen, ListVideo, Pencil, Trash2, X } from 'lucide-vue-next';
+import { Plus, Search, BookOpen, ListVideo, Pencil, Trash2, X, Upload, LinkIcon } from 'lucide-vue-next';
 
 const props = defineProps({
     courses: Array,
@@ -153,13 +195,18 @@ const props = defineProps({
 const showModal = ref(false);
 const editing = ref(null);
 const searchQuery = ref(props.search || '');
+const imageMode = ref('upload'); // 'upload' or 'url'
+const imagePreview = ref(null);
+const formErrors = ref({});
+const processing = ref(false);
 let searchTimeout = null;
 
 const form = useForm({
     title: '',
     description: '',
     instructor: '',
-    image: '',
+    image_file: null,
+    image_url: '',
 });
 
 const onSearch = () => {
@@ -169,10 +216,26 @@ const onSearch = () => {
     }, 300);
 };
 
+const onFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        form.image_file = file;
+        imagePreview.value = URL.createObjectURL(file);
+    }
+};
+
+const removeImage = () => {
+    form.image_file = null;
+    imagePreview.value = null;
+};
+
 const openCreate = () => {
     editing.value = null;
     form.reset();
     form.clearErrors();
+    formErrors.value = {};
+    imagePreview.value = null;
+    imageMode.value = 'upload';
     showModal.value = true;
 };
 
@@ -181,26 +244,48 @@ const openEdit = (course) => {
     form.title = course.title;
     form.description = course.description || '';
     form.instructor = course.instructor;
-    form.image = course.image || '';
+    form.image_file = null;
+    form.image_url = course.image || '';
     form.clearErrors();
+    formErrors.value = {};
+    imagePreview.value = course.image || null;
+    imageMode.value = course.image && !course.image.startsWith('/storage/') ? 'url' : 'upload';
     showModal.value = true;
 };
 
 const closeModal = () => {
     showModal.value = false;
     editing.value = null;
+    imagePreview.value = null;
 };
 
 const submitForm = () => {
+    processing.value = true;
+    formErrors.value = {};
+
+    const formData = new FormData();
+    formData.append('title', form.title);
+    formData.append('description', form.description || '');
+    formData.append('instructor', form.instructor);
+
+    if (imageMode.value === 'upload' && form.image_file) {
+        formData.append('image_file', form.image_file);
+    } else if (imageMode.value === 'url' && form.image_url) {
+        formData.append('image_url', form.image_url);
+    }
+
     if (editing.value) {
-        form.put(`/admin/courses/${editing.value.id}`, {
+        formData.append('_method', 'PUT');
+        router.post(`/admin/courses/${editing.value.id}`, formData, {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
+            onSuccess: () => { closeModal(); processing.value = false; },
+            onError: (errors) => { formErrors.value = errors; processing.value = false; },
         });
     } else {
-        form.post('/admin/courses', {
+        router.post('/admin/courses', formData, {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
+            onSuccess: () => { closeModal(); processing.value = false; },
+            onError: (errors) => { formErrors.value = errors; processing.value = false; },
         });
     }
 };

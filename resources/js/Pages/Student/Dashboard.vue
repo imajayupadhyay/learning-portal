@@ -1,38 +1,6 @@
 <template>
     <StudentLayout>
         <div class="space-y-10 pb-12">
-            <!-- Hero Glass Panel -->
-            <div class="relative overflow-hidden bg-gradient-to-br from-red-600 to-red-700 rounded-[40px] p-16 text-white shadow-2xl shadow-red-600/30">
-                <div class="relative z-10 max-w-3xl">
-                    <div class="flex items-center gap-3 mb-8">
-                        <span class="px-4 py-1.5 bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-[0.3em] rounded-full ring-1 ring-white/20">Learning Path 2024</span>
-                    </div>
-                    <h1 class="text-6xl font-black tracking-tighter leading-[0.9] mb-8 italic">
-                        Accelerate your <br/>
-                        <span class="text-red-200">Engineering.</span>
-                    </h1>
-                    <p class="text-xl text-neutral-400 font-medium leading-relaxed max-w-xl mb-12">
-                        Welcome back, <span class="text-white underline underline-offset-8 decoration-red-300">{{ user.name }}</span>. 
-                        Your DevOps track is waiting. Ready to push to production?
-                    </p>
-                    <div class="flex items-center gap-6">
-                        <Link href="/student/courses" class="group px-10 py-5 bg-white text-red-600 font-black rounded-2xl hover:bg-red-50 transition-all duration-500 flex items-center gap-3 shadow-lg shadow-red-900/10">
-                            Resume Now
-                            <ArrowRight class="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                        </Link>
-                        <div class="flex items-center gap-4 pl-6 border-l border-white/10">
-                            <div class="flex -space-x-3">
-                                <div v-for="i in 3" :key="i" class="w-10 h-10 rounded-full border-2 border-red-700 bg-red-800 ring-2 ring-white/10"></div>
-                            </div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-neutral-500">1.2k+ Peers Active</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Abstract Glass Elements -->
-                <div class="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-white/10 rounded-full blur-[100px] animate-pulse"></div>
-                <div class="absolute bottom-[10%] right-[10%] w-32 h-32 bg-white/5 rounded-3xl rotate-12 backdrop-blur-3xl ring-1 ring-white/20"></div>
-            </div>
-
             <!-- Overall Progress Section -->
             <div class="bg-white/60 backdrop-blur-md border border-white rounded-[32px] p-10 shadow-sm">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
@@ -155,7 +123,6 @@
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import {
-    ArrowRight,
     ChevronRight,
     Activity,
     CheckCircle,
