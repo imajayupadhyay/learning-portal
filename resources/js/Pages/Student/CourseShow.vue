@@ -20,7 +20,7 @@
                 <div class="bg-white border border-neutral-100 rounded-[32px] p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div class="max-w-xl">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="px-3 py-1 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-full">Now Playing</span>
+                            <span class="px-3 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Now Playing</span>
                             <span class="text-[10px] font-black uppercase tracking-widest text-neutral-400">Lesson {{ currentLesson?.id }}</span>
                         </div>
                         <h1 class="text-3xl font-black tracking-tight leading-tight">{{ currentLesson?.title || course.title }}</h1>
@@ -30,7 +30,7 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-4">
-                        <button class="flex items-center gap-3 px-8 py-4 border-2 border-neutral-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:border-black transition-all group">
+                        <button class="flex items-center gap-3 px-8 py-4 border-2 border-neutral-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:border-red-600 hover:text-red-600 transition-all group">
                             <Download class="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
                             Assets
                         </button>
@@ -48,8 +48,8 @@
                         </div>
                         <!-- Overall Progress -->
                         <div class="mt-6">
-                            <div class="h-1 bg-neutral-200 rounded-full overflow-hidden">
-                                <div class="h-full bg-black rounded-full w-1/4 transition-all duration-1000"></div>
+                            <div class="h-1 bg-red-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-red-600 rounded-full w-1/4 transition-all duration-1000"></div>
                             </div>
                             <p class="text-[10px] font-black uppercase tracking-widest text-neutral-400 mt-3">Course Progress: 25%</p>
                         </div>
@@ -63,13 +63,13 @@
                             @click="currentLesson = lesson"
                             :class="[
                                 currentLesson?.id === lesson.id
-                                    ? 'bg-black text-white shadow-2xl shadow-black/20 translate-x-2'
-                                    : 'hover:bg-neutral-50 text-neutral-500 hover:text-black',
+                                    ? 'bg-red-600 text-white shadow-2xl shadow-red-600/20 translate-x-2'
+                                    : 'hover:bg-red-50 text-neutral-500 hover:text-red-600',
                                 'w-full flex items-start gap-4 p-5 rounded-[24px] text-left transition-all duration-500 group relative overflow-hidden'
                             ]"
                         >
                             <div :class="[
-                                currentLesson?.id === lesson.id ? 'bg-white/20 text-white' : 'bg-neutral-100 text-neutral-400 group-hover:bg-black group-hover:text-white',
+                                currentLesson?.id === lesson.id ? 'bg-white/20 text-white' : 'bg-red-50 text-red-400 group-hover:bg-red-600 group-hover:text-white',
                                 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black transition-all duration-500'
                             ]">
                                 {{ lesson.id.toString().padStart(2, '0') }}
@@ -90,11 +90,11 @@
 
                     <!-- Bottom Nav -->
                     <div class="p-6 border-t border-neutral-50 flex items-center justify-between">
-                         <button class="p-4 hover:bg-neutral-50 rounded-2xl transition-colors text-neutral-400 hover:text-black">
+                         <button class="p-4 hover:bg-red-50 rounded-2xl transition-colors text-neutral-400 hover:text-red-600">
                              <ChevronLeft class="w-5 h-5" />
                          </button>
                          <span class="text-xs font-black uppercase tracking-widest">Next Lesson</span>
-                         <button class="p-4 bg-black text-white rounded-2xl hover:bg-neutral-800 transition-all">
+                         <button class="p-4 bg-red-600 text-white rounded-2xl hover:bg-red-700 transition-all">
                              <ChevronRight class="w-5 h-5" />
                          </button>
                     </div>
@@ -136,6 +136,6 @@ const currentLesson = ref(props.course.lessons[0]);
     border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #000;
+    background: #DC2626;
 }
 </style>

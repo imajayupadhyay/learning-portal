@@ -3,7 +3,7 @@
         <div class="w-full max-w-md">
             <!-- Brand -->
             <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-600 rounded-2xl mb-6 shadow-lg shadow-red-600/20">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -14,14 +14,14 @@
             </div>
 
             <!-- Tab Switcher -->
-            <div class="flex bg-neutral-100 rounded-xl p-1 mb-8">
+            <div class="flex bg-red-50 rounded-xl p-1 mb-8">
                 <button
                     @click="activeTab = 'login'"
                     :class="[
                         'flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                         activeTab === 'login'
-                            ? 'bg-black text-white shadow-sm'
-                            : 'text-neutral-500 hover:text-black'
+                            ? 'bg-red-600 text-white shadow-sm'
+                            : 'text-neutral-500 hover:text-red-600'
                     ]"
                 >
                     Sign In
@@ -31,8 +31,8 @@
                     :class="[
                         'flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                         activeTab === 'register'
-                            ? 'bg-black text-white shadow-sm'
-                            : 'text-neutral-500 hover:text-black'
+                            ? 'bg-red-600 text-white shadow-sm'
+                            : 'text-neutral-500 hover:text-red-600'
                     ]"
                 >
                     Register
@@ -51,7 +51,7 @@
                         required
                         :class="[
                             'w-full px-4 py-3 bg-neutral-50 border rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200',
-                            loginForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-black focus:ring-2 focus:ring-neutral-100'
+                            loginForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-red-600 focus:ring-2 focus:ring-red-100'
                         ]"
                         placeholder="you@example.com"
                     />
@@ -67,11 +67,11 @@
                             :type="showLoginPassword ? 'text' : 'password'"
                             autocomplete="current-password"
                             required
-                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-neutral-100 pr-12"
+                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-red-600 focus:ring-2 focus:ring-red-100 pr-12"
                             placeholder="Enter your password"
                         />
                         <button type="button" @click="showLoginPassword = !showLoginPassword"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black transition-colors">
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-red-600 transition-colors">
                             <svg v-if="!showLoginPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -86,12 +86,12 @@
 
                 <div class="flex items-center">
                     <input id="remember" v-model="loginForm.remember" type="checkbox"
-                        class="w-4 h-4 rounded border-neutral-300 text-black focus:ring-black accent-black" />
+                        class="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-600 accent-red-600" />
                     <label for="remember" class="ml-2 text-sm text-neutral-600">Remember me</label>
                 </div>
 
                 <button type="submit" :disabled="loginForm.processing"
-                    class="w-full py-3 px-4 bg-black text-white font-medium rounded-xl hover:bg-neutral-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full py-3 px-4 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-600/20">
                     <span v-if="!loginForm.processing">Sign In</span>
                     <span v-else class="flex items-center justify-center gap-2">
                         <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -115,7 +115,7 @@
                         required
                         :class="[
                             'w-full px-4 py-3 bg-neutral-50 border rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200',
-                            registerForm.errors.name ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-black focus:ring-2 focus:ring-neutral-100'
+                            registerForm.errors.name ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-red-600 focus:ring-2 focus:ring-red-100'
                         ]"
                         placeholder="John Doe"
                     />
@@ -132,7 +132,7 @@
                         required
                         :class="[
                             'w-full px-4 py-3 bg-neutral-50 border rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200',
-                            registerForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-black focus:ring-2 focus:ring-neutral-100'
+                            registerForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-red-600 focus:ring-2 focus:ring-red-100'
                         ]"
                         placeholder="you@example.com"
                     />
@@ -148,11 +148,11 @@
                             :type="showRegPassword ? 'text' : 'password'"
                             autocomplete="new-password"
                             required
-                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-neutral-100 pr-12"
+                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-red-600 focus:ring-2 focus:ring-red-100 pr-12"
                             placeholder="Min. 8 characters"
                         />
                         <button type="button" @click="showRegPassword = !showRegPassword"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black transition-colors">
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-red-600 transition-colors">
                             <svg v-if="!showRegPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -173,13 +173,13 @@
                         type="password"
                         autocomplete="new-password"
                         required
-                        class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-neutral-100"
+                        class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-red-600 focus:ring-2 focus:ring-red-100"
                         placeholder="Confirm your password"
                     />
                 </div>
 
                 <button type="submit" :disabled="registerForm.processing"
-                    class="w-full py-3 px-4 bg-black text-white font-medium rounded-xl hover:bg-neutral-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full py-3 px-4 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-600/20">
                     <span v-if="!registerForm.processing">Create Account</span>
                     <span v-else class="flex items-center justify-center gap-2">
                         <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">

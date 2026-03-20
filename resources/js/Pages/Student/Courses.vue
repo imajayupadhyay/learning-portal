@@ -7,11 +7,11 @@
                     <h1 class="text-5xl font-black tracking-tighter italic mb-6">Course Library.</h1>
                     <p class="text-neutral-500 text-lg font-medium leading-relaxed">
                         Precision-engineered curriculum for the next generation of 
-                        <span class="text-black font-bold border-b-2 border-black/5">DevOps professionals.</span>
+                        <span class="text-red-600 font-bold border-b-2 border-red-200">DevOps professionals.</span>
                     </p>
                 </div>
                 <div class="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 rounded-[24px] border border-white shadow-sm">
-                    <button class="px-8 py-3 bg-black text-white rounded-[20px] text-[10px] font-black uppercase tracking-widest shadow-xl shadow-black/10 transition-all">All Modules</button>
+                    <button class="px-8 py-3 bg-red-600 text-white rounded-[20px] text-[10px] font-black uppercase tracking-widest shadow-xl shadow-red-600/20 transition-all">All Modules</button>
                     <button class="px-8 py-3 text-neutral-400 hover:text-black rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all">Latest</button>
                 </div>
             </div>
@@ -45,8 +45,8 @@
                     <div class="p-10 flex-1 flex flex-col justify-between relative">
                         <div>
                             <div class="flex items-center gap-3 mb-6">
-                                <span class="w-2 h-2 rounded-full bg-black group-hover:animate-ping"></span>
-                                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-neutral-400 group-hover:text-black transition-colors">Core Curriculum</span>
+                                <span class="w-2 h-2 rounded-full bg-red-600 group-hover:animate-ping"></span>
+                                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-neutral-400 group-hover:text-red-600 transition-colors">Core Curriculum</span>
                             </div>
                             <h3 class="text-3xl font-black tracking-tighter leading-[1.1] mb-6 group-hover:translate-x-1 transition-transform duration-500">{{ course.title }}</h3>
                             <p class="text-neutral-500 text-sm font-medium line-clamp-2 leading-relaxed mb-8">{{ course.description }}</p>
@@ -58,12 +58,12 @@
                                     <span class="text-neutral-400 italic text-[10px]">Syncing...</span>
                                     <span>{{ course.progress }}%</span>
                                 </div>
-                                <div class="h-1.5 bg-neutral-100/50 rounded-full overflow-hidden p-[2px] ring-1 ring-black/[0.03]">
-                                    <div class="h-full bg-black rounded-full transition-all duration-1000" :style="{ width: course.progress + '%' }"></div>
+                                <div class="h-1.5 bg-red-100/50 rounded-full overflow-hidden p-[2px] ring-1 ring-red-200/30">
+                                    <div class="h-full bg-red-600 rounded-full transition-all duration-1000" :style="{ width: course.progress + '%' }"></div>
                                 </div>
                             </div>
 
-                            <Link :href="`/student/courses/${course.id}`" class="w-full flex items-center justify-center gap-4 py-5 bg-black text-white rounded-[24px] text-[10px] font-black uppercase tracking-[0.4em] hover:bg-neutral-800 hover:shadow-2xl hover:shadow-black/20 transition-all duration-500 group-hover:-translate-y-1">
+                            <Link :href="`/student/courses/${course.id}`" class="w-full flex items-center justify-center gap-4 py-5 bg-red-600 text-white rounded-[24px] text-[10px] font-black uppercase tracking-[0.4em] hover:bg-red-700 hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 group-hover:-translate-y-1">
                                 {{ course.progress > 0 ? 'Resume' : 'Start' }}
                                 <ArrowRight class="w-4 h-4" />
                             </Link>
