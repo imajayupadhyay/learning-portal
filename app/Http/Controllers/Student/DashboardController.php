@@ -141,8 +141,71 @@ class DashboardController extends Controller
 
     public function profile(Request $request)
     {
+        $user = $request->user();
+        $detail = $user->studentDetail;
+
         return Inertia::render('Student/Profile', [
-            'user' => $request->user()->only('name', 'email'),
+            'user' => $user->only('name', 'email'),
+            'detail' => $detail ? [
+                'phone' => $detail->phone,
+                'date_of_birth' => $detail->date_of_birth?->format('Y-m-d'),
+                'gender' => $detail->gender,
+                'education' => $detail->education,
+                'institution' => $detail->institution,
+                'interests' => $detail->interests,
+                'bio' => $detail->bio,
+                'address' => $detail->address,
+                'city' => $detail->city,
+                'state' => $detail->state,
+                'country' => $detail->country,
+                'pincode' => $detail->pincode,
+                'linkedin' => $detail->linkedin,
+                'github' => $detail->github,
+                'avatar' => $detail->avatar,
+            ] : null,
         ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|in:male,female,other',
+            'education' => 'nullable|string|max:255',
+            'institution' => 'nullable|string|max:255',
+            'interests' => 'nullable|string|max:500',
+            'bio' => 'nullable|string|max:1000',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'pincode' => 'nullable|string|max:20',
+            'linkedin' => 'nullable|string|max:255',
+            'github' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $user = $request->user();
+        $user->update(['name' => $request->name]);
+
+        $detailData = $request->only(
+            'phone', 'date_of_birth', 'gender', 'education', 'institution',
+            'interests', 'bio', 'address', 'city', 'state', 'country',
+            'pincode', 'linkedin', 'github'
+        );
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $detailData['avatar'] = '/storage/' . $path;
+        }
+
+        $user->studentDetail()->updateOrCreate(
+            ['user_id' => $user->id],
+            $detailData
+        );
+
+        return back();
     }
 }

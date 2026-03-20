@@ -49,6 +49,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function studentDetail()
+    {
+        return $this->hasOne(StudentDetail::class);
+    }
+
     public function goals()
     {
         return $this->hasMany(Goal::class);

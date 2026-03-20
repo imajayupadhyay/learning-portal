@@ -17,6 +17,7 @@ Route::middleware(['auth', 'student'])->prefix('student')->group(function () {
     Route::get('/courses', [DashboardController::class, 'courses'])->name('student.courses');
     Route::get('/courses/{id}', [DashboardController::class, 'courseShow'])->name('student.courses.show');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('student.profile');
+    Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('student.profile.update');
 
     // Goals
     Route::get('/goals', [GoalController::class, 'index'])->name('student.goals');

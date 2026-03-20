@@ -74,6 +74,9 @@
                                             class="flex items-center gap-1.5 px-3 py-2 bg-neutral-50 hover:bg-amber-50 rounded-xl text-[9px] font-black uppercase tracking-widest text-neutral-400 hover:text-amber-700 transition-colors">
                                             <XCircle class="w-3.5 h-3.5" /> Revoke
                                         </button>
+                                        <button @click="viewStudent(student.id)" class="p-2.5 hover:bg-blue-50 rounded-xl transition-colors" title="View Details">
+                                            <Eye class="w-4 h-4 text-neutral-400 hover:text-blue-600" />
+                                        </button>
                                         <button @click="openEdit(student)" class="p-2.5 hover:bg-neutral-100 rounded-xl transition-colors">
                                             <Pencil class="w-4 h-4 text-neutral-400" />
                                         </button>
@@ -145,6 +148,173 @@
                     </div>
                 </div>
             </Teleport>
+
+            <!-- Student Detail Modal -->
+            <Teleport to="body">
+                <div v-if="showDetailModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/50" @click="closeDetailModal"></div>
+                    <div class="relative w-full max-w-2xl bg-white rounded-[32px] shadow-2xl overflow-y-auto max-h-[90vh]">
+                        <!-- Loading -->
+                        <div v-if="loadingDetail" class="p-16 text-center">
+                            <div class="w-10 h-10 border-4 border-red-200 border-t-red-600 rounded-full animate-spin mx-auto mb-4"></div>
+                            <p class="text-neutral-400 text-sm font-bold">Loading student details...</p>
+                        </div>
+
+                        <!-- Content -->
+                        <div v-else-if="viewingStudent">
+                            <!-- Header -->
+                            <div class="p-8 pb-0 flex items-start justify-between">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-16 h-16 rounded-2xl overflow-hidden bg-red-50 flex items-center justify-center shrink-0">
+                                        <img v-if="viewingStudent.detail?.avatar" :src="viewingStudent.detail.avatar" class="w-full h-full object-cover" />
+                                        <span v-else class="text-red-600 text-lg font-black">
+                                            {{ viewingStudent.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-2xl font-black tracking-tight">{{ viewingStudent.name }}</h2>
+                                        <p class="text-neutral-500 text-sm font-medium mt-1">{{ viewingStudent.email }}</p>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <span v-if="viewingStudent.is_approved" class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                                                <CheckCircle class="w-3 h-3" /> Approved
+                                            </span>
+                                            <span v-else class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                                                <Clock class="w-3 h-3" /> Pending
+                                            </span>
+                                            <span class="text-[9px] font-bold text-neutral-400 tracking-wide">Joined {{ viewingStudent.created_at }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button @click="closeDetailModal" class="p-2 hover:bg-neutral-100 rounded-xl transition-colors shrink-0">
+                                    <X class="w-5 h-5 text-neutral-400" />
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="px-8 pt-6">
+                                <div class="grid grid-cols-4 gap-3">
+                                    <div class="bg-red-50 rounded-2xl p-4 text-center">
+                                        <p class="text-2xl font-black text-red-600">{{ viewingStudent.stats.enrolled_courses }}</p>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-neutral-400 mt-1">Courses</p>
+                                    </div>
+                                    <div class="bg-red-50 rounded-2xl p-4 text-center">
+                                        <p class="text-2xl font-black text-red-600">{{ viewingStudent.stats.completed_lessons }}</p>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-neutral-400 mt-1">Lessons</p>
+                                    </div>
+                                    <div class="bg-red-50 rounded-2xl p-4 text-center">
+                                        <p class="text-2xl font-black text-red-600">{{ viewingStudent.stats.total_todos }}</p>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-neutral-400 mt-1">Todos</p>
+                                    </div>
+                                    <div class="bg-red-50 rounded-2xl p-4 text-center">
+                                        <p class="text-2xl font-black text-red-600">{{ viewingStudent.stats.completed_todos }}</p>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-neutral-400 mt-1">Done</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Details -->
+                            <div class="p-8 space-y-6">
+                                <!-- Bio -->
+                                <div v-if="viewingStudent.detail?.bio">
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-2">Bio</p>
+                                    <p class="text-sm text-neutral-600 leading-relaxed bg-neutral-50 rounded-2xl p-4">{{ viewingStudent.detail.bio }}</p>
+                                </div>
+
+                                <!-- Personal Info -->
+                                <div>
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-3">Personal Information</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div v-if="viewingStudent.detail?.phone" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <Phone class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600">{{ viewingStudent.detail.phone }}</span>
+                                        </div>
+                                        <div v-if="viewingStudent.detail?.date_of_birth" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <Clock class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600">{{ viewingStudent.detail.date_of_birth }}</span>
+                                        </div>
+                                        <div v-if="viewingStudent.detail?.gender" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <Users class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600 capitalize">{{ viewingStudent.detail.gender }}</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <Mail class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600 truncate">{{ viewingStudent.email }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Education -->
+                                <div v-if="viewingStudent.detail?.education || viewingStudent.detail?.institution">
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-3">Education</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div v-if="viewingStudent.detail?.education" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <GraduationCap class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600">{{ viewingStudent.detail.education }}</span>
+                                        </div>
+                                        <div v-if="viewingStudent.detail?.institution" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <BookOpen class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600">{{ viewingStudent.detail.institution }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Interests -->
+                                <div v-if="viewingStudent.detail?.interests">
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-3">Interests & Skills</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span v-for="interest in viewingStudent.detail.interests.split(',')" :key="interest"
+                                            class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold">
+                                            {{ interest.trim() }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Address -->
+                                <div v-if="viewingStudent.detail?.address || viewingStudent.detail?.city">
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-3">Address</p>
+                                    <div class="flex items-start gap-3 bg-neutral-50 rounded-xl p-3">
+                                        <MapPin class="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                                        <span class="text-sm font-medium text-neutral-600">
+                                            {{ [viewingStudent.detail.address, viewingStudent.detail.city, viewingStudent.detail.state, viewingStudent.detail.country, viewingStudent.detail.pincode].filter(Boolean).join(', ') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Social Links -->
+                                <div v-if="viewingStudent.detail?.linkedin || viewingStudent.detail?.github">
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-3">Social Links</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div v-if="viewingStudent.detail?.linkedin" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <Linkedin class="w-4 h-4 text-blue-600 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600 truncate">{{ viewingStudent.detail.linkedin }}</span>
+                                        </div>
+                                        <div v-if="viewingStudent.detail?.github" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <Github class="w-4 h-4 text-neutral-800 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600 truncate">{{ viewingStudent.detail.github }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enrolled Courses -->
+                                <div v-if="viewingStudent.courses.length > 0">
+                                    <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em] mb-3">Enrolled Courses</p>
+                                    <div class="space-y-2">
+                                        <div v-for="course in viewingStudent.courses" :key="course.id" class="flex items-center gap-3 bg-neutral-50 rounded-xl p-3">
+                                            <ListChecks class="w-4 h-4 text-red-400 shrink-0" />
+                                            <span class="text-sm font-medium text-neutral-600">{{ course.title }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- No details message -->
+                                <div v-if="!viewingStudent.detail" class="text-center py-6">
+                                    <p class="text-neutral-400 text-sm font-bold">This student hasn't filled in their profile details yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Teleport>
         </div>
     </AdminLayout>
 </template>
@@ -153,7 +323,7 @@
 import { ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { UserPlus, Search, Pencil, Trash2, Users, X, CheckCircle, XCircle, Clock } from 'lucide-vue-next';
+import { UserPlus, Search, Pencil, Trash2, Users, X, CheckCircle, XCircle, Clock, Eye, Phone, Mail, MapPin, GraduationCap, BookOpen, ListChecks, Github, Linkedin } from 'lucide-vue-next';
 
 const props = defineProps({
     students: Array,
@@ -161,6 +331,9 @@ const props = defineProps({
 });
 
 const showModal = ref(false);
+const showDetailModal = ref(false);
+const viewingStudent = ref(null);
+const loadingDetail = ref(false);
 const editing = ref(null);
 const searchQuery = ref(props.search || '');
 let searchTimeout = null;
@@ -211,6 +384,23 @@ const submitForm = () => {
             onSuccess: () => closeModal(),
         });
     }
+};
+
+const viewStudent = async (id) => {
+    loadingDetail.value = true;
+    showDetailModal.value = true;
+    try {
+        const response = await fetch(`/admin/students/${id}`);
+        viewingStudent.value = await response.json();
+    } catch (e) {
+        viewingStudent.value = null;
+    }
+    loadingDetail.value = false;
+};
+
+const closeDetailModal = () => {
+    showDetailModal.value = false;
+    viewingStudent.value = null;
 };
 
 const approveStudent = (id) => {

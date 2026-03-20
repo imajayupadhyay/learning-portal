@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\LessonCompletion;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -81,6 +82,51 @@ class StudentController extends Controller
         }
 
         return back();
+    }
+
+    public function show(User $student)
+    {
+        if ($student->role !== 'student') {
+            abort(403);
+        }
+
+        $detail = $student->studentDetail;
+        $goalCourses = $student->goals()->with('course:id,title')->get()->pluck('course');
+        $completedLessons = LessonCompletion::where('user_id', $student->id)->count();
+        $totalTodos = $student->todos()->count();
+        $completedTodos = $student->todos()->where('is_completed', true)->count();
+
+        return response()->json([
+            'id' => $student->id,
+            'name' => $student->name,
+            'email' => $student->email,
+            'is_approved' => (bool) $student->is_approved,
+            'created_at' => $student->created_at->format('M d, Y'),
+            'detail' => $detail ? [
+                'phone' => $detail->phone,
+                'date_of_birth' => $detail->date_of_birth?->format('M d, Y'),
+                'gender' => $detail->gender,
+                'education' => $detail->education,
+                'institution' => $detail->institution,
+                'interests' => $detail->interests,
+                'bio' => $detail->bio,
+                'address' => $detail->address,
+                'city' => $detail->city,
+                'state' => $detail->state,
+                'country' => $detail->country,
+                'pincode' => $detail->pincode,
+                'linkedin' => $detail->linkedin,
+                'github' => $detail->github,
+                'avatar' => $detail->avatar,
+            ] : null,
+            'stats' => [
+                'enrolled_courses' => $goalCourses->count(),
+                'completed_lessons' => $completedLessons,
+                'total_todos' => $totalTodos,
+                'completed_todos' => $completedTodos,
+            ],
+            'courses' => $goalCourses->map(fn ($c) => ['id' => $c->id, 'title' => $c->title]),
+        ]);
     }
 
     public function approve(User $student)
