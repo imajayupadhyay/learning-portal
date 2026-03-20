@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-white flex items-center justify-center px-4">
         <div class="w-full max-w-md">
             <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-600 rounded-2xl mb-6 shadow-lg shadow-red-600/20">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -23,7 +23,7 @@
                         required
                         :class="[
                             'w-full px-4 py-3 bg-neutral-50 border rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200',
-                            form.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-black focus:ring-2 focus:ring-neutral-100'
+                            form.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-neutral-200 focus:border-red-600 focus:ring-2 focus:ring-red-100'
                         ]"
                         placeholder="admin@example.com"
                     />
@@ -39,11 +39,11 @@
                             :type="showPassword ? 'text' : 'password'"
                             autocomplete="current-password"
                             required
-                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-black focus:ring-2 focus:ring-neutral-100 pr-12"
+                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-black placeholder-neutral-400 outline-none transition-all duration-200 focus:border-red-600 focus:ring-2 focus:ring-red-100 pr-12"
                             placeholder="Enter your password"
                         />
                         <button type="button" @click="showPassword = !showPassword"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black transition-colors">
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-red-600 transition-colors">
                             <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -58,12 +58,12 @@
 
                 <div class="flex items-center">
                     <input id="remember" v-model="form.remember" type="checkbox"
-                        class="w-4 h-4 rounded border-neutral-300 text-black focus:ring-black accent-black" />
+                        class="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-600 accent-red-600" />
                     <label for="remember" class="ml-2 text-sm text-neutral-600">Remember me</label>
                 </div>
 
                 <button type="submit" :disabled="form.processing"
-                    class="w-full py-3 px-4 bg-black text-white font-medium rounded-xl hover:bg-neutral-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="w-full py-3 px-4 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-600/20">
                     <span v-if="!form.processing">Sign In</span>
                     <span v-else class="flex items-center justify-center gap-2">
                         <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">

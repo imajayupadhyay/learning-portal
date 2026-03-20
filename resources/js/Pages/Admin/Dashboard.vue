@@ -1,44 +1,133 @@
 <template>
     <AdminLayout>
-        <div class="space-y-8">
-            <div class="bg-white border border-neutral-200 rounded-2xl p-8">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <h1 class="text-2xl font-bold text-black">Welcome back, {{ user.name }}</h1>
-                        <p class="text-neutral-500 mt-1">Here's your admin dashboard overview.</p>
+        <div class="space-y-10 pb-12">
+            <!-- Hero Welcome Panel -->
+            <div class="relative overflow-hidden bg-gradient-to-br from-red-600 to-red-700 rounded-[40px] p-14 text-white shadow-2xl shadow-red-600/30">
+                <div class="relative z-10 max-w-3xl">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="px-4 py-1.5 bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-[0.3em] rounded-full ring-1 ring-white/20">Admin Panel</span>
                     </div>
-                    <div class="w-12 h-12 bg-neutral-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
+                    <h1 class="text-5xl font-black tracking-tighter leading-[0.9] mb-6 italic">
+                        Welcome back, <br/>
+                        <span class="text-red-200">{{ user.name }}.</span>
+                    </h1>
+                    <p class="text-lg text-white/70 font-medium leading-relaxed max-w-xl">
+                        Manage your courses, track student progress, and keep your LMS running smoothly.
+                    </p>
+                </div>
+                <!-- Abstract Glass Elements -->
+                <div class="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-white/10 rounded-full blur-[100px] animate-pulse"></div>
+                <div class="absolute bottom-[10%] right-[10%] w-32 h-32 bg-white/5 rounded-3xl rotate-12 backdrop-blur-3xl ring-1 ring-white/20"></div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white/60 backdrop-blur-md border border-white rounded-[32px] p-10 shadow-sm hover:shadow-xl hover:shadow-black/5 transition-all duration-500 group">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-red-600/20">
+                            <BookOpen class="w-5 h-5" />
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Courses</span>
                     </div>
+                    <p class="text-5xl font-black tracking-tighter mb-2 italic">{{ stats.total_courses }}</p>
+                    <p class="text-xs font-black uppercase tracking-[0.2em] text-neutral-400">Total Courses</p>
+                </div>
+
+                <div class="bg-white/60 backdrop-blur-md border border-white rounded-[32px] p-10 shadow-sm hover:shadow-xl hover:shadow-black/5 transition-all duration-500 group">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-red-600/20">
+                            <PlayCircle class="w-5 h-5" />
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Lessons</span>
+                    </div>
+                    <p class="text-5xl font-black tracking-tighter mb-2 italic">{{ stats.total_lessons }}</p>
+                    <p class="text-xs font-black uppercase tracking-[0.2em] text-neutral-400">Total Lessons</p>
+                </div>
+
+                <div class="bg-white/60 backdrop-blur-md border border-white rounded-[32px] p-10 shadow-sm hover:shadow-xl hover:shadow-black/5 transition-all duration-500 group">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-red-600/20">
+                            <Users class="w-5 h-5" />
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Students</span>
+                    </div>
+                    <p class="text-5xl font-black tracking-tighter mb-2 italic">{{ stats.total_students }}</p>
+                    <p class="text-xs font-black uppercase tracking-[0.2em] text-neutral-400">Registered Students</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div v-for="stat in stats" :key="stat.label"
-                    class="bg-white border border-neutral-200 rounded-2xl p-6 hover:border-neutral-300 transition-colors duration-200">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 bg-neutral-100 rounded-xl flex items-center justify-center">
-                            <component :is="'div'" v-html="stat.icon" />
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <!-- Courses Column -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="flex items-center justify-between px-2">
+                        <h2 class="text-3xl font-black tracking-tighter italic">Courses</h2>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-neutral-400">{{ courses.length }} Total</span>
+                    </div>
+
+                    <div v-if="courses.length > 0" class="space-y-4">
+                        <div v-for="course in courses" :key="course.id"
+                            class="group bg-white/60 backdrop-blur-md border border-white rounded-[28px] p-6 hover:shadow-xl hover:shadow-black/5 transition-all duration-500 flex items-center gap-6">
+                            <div class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 bg-neutral-100">
+                                <img v-if="course.image" :src="course.image" class="w-full h-full object-cover" />
+                                <div v-else class="w-full h-full flex items-center justify-center">
+                                    <BookOpen class="w-6 h-6 text-neutral-300" />
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-bold tracking-tight leading-tight truncate">{{ course.title }}</h3>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-neutral-400 mt-1">{{ course.lessons_count }} Lessons</p>
+                            </div>
+                            <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 flex-shrink-0">
+                                <ChevronRight class="w-5 h-5" />
+                            </div>
                         </div>
                     </div>
-                    <p class="text-3xl font-bold text-black">{{ stat.value }}</p>
-                    <p class="text-sm text-neutral-500 mt-1">{{ stat.label }}</p>
-                </div>
-            </div>
 
-            <div class="bg-white border border-neutral-200 rounded-2xl p-8">
-                <h2 class="text-lg font-semibold text-black mb-4">Account Details</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">Name</p>
-                        <p class="text-black mt-1">{{ user.name }}</p>
+                    <div v-else class="bg-white/40 border border-neutral-100 rounded-[28px] p-12 text-center">
+                        <BookOpen class="w-10 h-10 text-neutral-300 mx-auto mb-4" />
+                        <p class="text-neutral-400 font-bold">No courses created yet.</p>
                     </div>
-                    <div>
-                        <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider">Email</p>
-                        <p class="text-black mt-1">{{ user.email }}</p>
+                </div>
+
+                <!-- Recent Students Column -->
+                <div class="space-y-8">
+                    <h2 class="text-3xl font-black tracking-tighter italic px-2">Students</h2>
+                    <div class="bg-white border border-neutral-100 rounded-[40px] p-8 space-y-6 shadow-sm">
+                        <div v-if="recentStudents.length > 0">
+                            <div v-for="student in recentStudents" :key="student.id" class="flex items-center gap-4 py-4 group">
+                                <div class="w-11 h-11 bg-red-50 rounded-[14px] flex items-center justify-center text-red-600 text-[11px] font-black flex-shrink-0 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                                    {{ student.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-bold leading-tight truncate">{{ student.name }}</p>
+                                    <p class="text-[10px] text-neutral-400 font-bold truncate mt-0.5">{{ student.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else class="text-center py-8">
+                            <Users class="w-8 h-8 text-neutral-300 mx-auto mb-3" />
+                            <p class="text-neutral-400 text-sm font-bold">No students yet.</p>
+                        </div>
+                    </div>
+
+                    <!-- Account Info Card -->
+                    <div class="bg-white border border-neutral-100 rounded-[40px] p-8 shadow-sm space-y-5">
+                        <h3 class="text-lg font-black tracking-tight">Your Account</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Name</p>
+                                <p class="text-sm font-bold mt-1">{{ user.name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Email</p>
+                                <p class="text-sm font-bold mt-1">{{ user.email }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Role</p>
+                                <span class="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest mt-1">Administrator</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -48,26 +137,12 @@
 
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { BookOpen, PlayCircle, Users, ChevronRight } from 'lucide-vue-next';
 
 defineProps({
     user: Object,
+    stats: Object,
+    recentStudents: Array,
+    courses: Array,
 });
-
-const stats = [
-    {
-        label: 'Total Courses',
-        value: '0',
-        icon: '<svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>',
-    },
-    {
-        label: 'Total Students',
-        value: '0',
-        icon: '<svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>',
-    },
-    {
-        label: 'Active Sessions',
-        value: '1',
-        icon: '<svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>',
-    },
-];
 </script>
