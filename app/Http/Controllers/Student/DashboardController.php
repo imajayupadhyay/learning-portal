@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\LessonCompletion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,52 +12,91 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
+        $goalCourseIds = $user->goals()->pluck('course_id');
+
+        $goalCourses = Course::whereIn('id', $goalCourseIds)
+            ->withCount('lessons')
+            ->get();
+
+        $recentCourses = $goalCourses->take(3)->map(function ($course) use ($user) {
+            $completedCount = LessonCompletion::where('user_id', $user->id)
+                ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                ->count();
+            $progress = $course->lessons_count > 0
+                ? round(($completedCount / $course->lessons_count) * 100)
+                : 0;
+
+            return [
+                'id' => $course->id,
+                'title' => $course->title,
+                'progress' => $progress,
+                'image' => $course->image,
+                'total_lessons' => $course->lessons_count,
+                'completed_lessons' => $completedCount,
+            ];
+        })->values();
+
+        $totalLessonsAll = $goalCourses->sum('lessons_count');
+        $completedLessonsAll = 0;
+        foreach ($goalCourses as $course) {
+            $completedLessonsAll += LessonCompletion::where('user_id', $user->id)
+                ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                ->count();
+        }
+        $overallProgress = $totalLessonsAll > 0
+            ? round(($completedLessonsAll / $totalLessonsAll) * 100)
+            : 0;
+
+        $completedCourses = $goalCourses->filter(function ($course) use ($user) {
+            if ($course->lessons_count === 0) return false;
+            $completedCount = LessonCompletion::where('user_id', $user->id)
+                ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                ->count();
+            return $completedCount >= $course->lessons_count;
+        })->count();
+
+        $inProgressCourses = $goalCourses->filter(function ($course) use ($user) {
+            $completedCount = LessonCompletion::where('user_id', $user->id)
+                ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                ->count();
+            return $completedCount > 0 && $completedCount < $course->lessons_count;
+        })->count();
+
         return Inertia::render('Student/Dashboard', [
-            'user' => $request->user()->only('name', 'email'),
-            'recent_courses' => [
-                [
-                    'id' => 1,
-                    'title' => 'DevOps Mastery: CI/CD Pipelines',
-                    'progress' => 45,
-                    'image' => 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&auto=format&fit=crop&q=60',
-                ]
-            ],
+            'user' => $user->only('name', 'email'),
+            'recent_courses' => $recentCourses,
             'stats' => [
-                ['label' => 'Enrolled', 'value' => '3'],
-                ['label' => 'Completed', 'value' => '0'],
-                ['label' => 'In Progress', 'value' => '1'],
-            ]
+                ['label' => 'Enrolled', 'value' => (string) $goalCourses->count()],
+                ['label' => 'Completed', 'value' => (string) $completedCourses],
+                ['label' => 'In Progress', 'value' => (string) $inProgressCourses],
+            ],
+            'overall_progress' => $overallProgress,
+            'total_lessons' => $totalLessonsAll,
+            'completed_lessons' => $completedLessonsAll,
         ]);
     }
 
     public function courses()
     {
-        $courses = [
-            [
-                'id' => 1,
-                'title' => 'DevOps Mastery: CI/CD Pipelines',
-                'description' => 'Learn how to build and deploy high-performance CI/CD pipelines from scratch.',
-                'image' => 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&auto=format&fit=crop&q=60',
-                'lessons_count' => 12,
-                'progress' => 45,
-            ],
-            [
-                'id' => 2,
-                'title' => 'Kubernetes Administration',
-                'description' => 'Master K8s orchestration, deployments, and cluster management in the real world.',
-                'image' => 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&auto=format&fit=crop&q=60',
-                'lessons_count' => 24,
-                'progress' => 10,
-            ],
-            [
-                'id' => 3,
-                'title' => 'Docker for Beginners',
-                'description' => 'Containerize your applications and understand the power of Docker ecosystem.',
-                'image' => 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&auto=format&fit=crop&q=60',
-                'lessons_count' => 8,
-                'progress' => 0,
-            ],
-        ];
+        $user = request()->user();
+        $courses = Course::withCount('lessons')->get()->map(function ($course) use ($user) {
+            $completedCount = LessonCompletion::where('user_id', $user->id)
+                ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                ->count();
+            $progress = $course->lessons_count > 0
+                ? round(($completedCount / $course->lessons_count) * 100)
+                : 0;
+
+            return [
+                'id' => $course->id,
+                'title' => $course->title,
+                'description' => $course->description,
+                'image' => $course->image,
+                'lessons_count' => $course->lessons_count,
+                'progress' => $progress,
+            ];
+        });
 
         return Inertia::render('Student/Courses', [
             'courses' => $courses,
@@ -64,20 +105,37 @@ class DashboardController extends Controller
 
     public function courseShow($id)
     {
-        $course = [
-            'id' => $id,
-            'title' => 'DevOps Mastery: CI/CD Pipelines',
-            'instructor' => 'Ajay Upadhyay',
-            'lessons' => [
-                ['id' => 1, 'title' => '01 - Introduction to DevOps', 'duration' => '10:05', 'video_id' => '1A2B3C4D5E6F7G8H9I0J'],
-                ['id' => 2, 'title' => '02 - Setting up Jenkins', 'duration' => '15:20', 'video_id' => '1A2B3C4D5E6F7G8H9I0J'],
-                ['id' => 3, 'title' => '03 - Building Docker Images', 'duration' => '20:45', 'video_id' => '1A2B3C4D5E6F7G8H9I0J'],
-                ['id' => 4, 'title' => '04 - Deploying to Staging', 'duration' => '12:30', 'video_id' => '1A2B3C4D5E6F7G8H9I0J'],
-            ],
-        ];
+        $user = request()->user();
+        $course = Course::with(['lessons' => function ($q) {
+            $q->orderBy('sort_order');
+        }])->findOrFail($id);
+
+        $completedLessonIds = LessonCompletion::where('user_id', $user->id)
+            ->whereIn('lesson_id', $course->lessons->pluck('id'))
+            ->pluck('lesson_id')
+            ->toArray();
+
+        $totalLessons = $course->lessons->count();
+        $completedCount = count($completedLessonIds);
+        $progress = $totalLessons > 0 ? round(($completedCount / $totalLessons) * 100) : 0;
 
         return Inertia::render('Student/CourseShow', [
-            'course' => $course,
+            'course' => [
+                'id' => $course->id,
+                'title' => $course->title,
+                'instructor' => $course->instructor,
+                'lessons' => $course->lessons->map(function ($lesson) use ($completedLessonIds) {
+                    return [
+                        'id' => $lesson->id,
+                        'title' => $lesson->title,
+                        'duration' => $lesson->duration,
+                        'video_id' => $lesson->video_id,
+                        'completed' => in_array($lesson->id, $completedLessonIds),
+                    ];
+                }),
+            ],
+            'progress' => $progress,
+            'completedLessonIds' => $completedLessonIds,
         ]);
     }
 

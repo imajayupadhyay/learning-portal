@@ -104,7 +104,8 @@ import {
     BookOpen,
     User,
     LogOut,
-    ChevronRight
+    ChevronRight,
+    Target
 } from 'lucide-vue-next';
 
 const page = usePage();
@@ -112,6 +113,7 @@ const page = usePage();
 const navigation = [
     { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard, component: 'Student/Dashboard' },
     { name: 'Courses', href: '/student/courses', icon: BookOpen, component: 'Student/Courses' },
+    { name: 'My Goals', href: '/student/goals', icon: Target, component: 'Student/Goals' },
     { name: 'My Profile', href: '/student/profile', icon: User, component: 'Student/Profile' },
 ];
 

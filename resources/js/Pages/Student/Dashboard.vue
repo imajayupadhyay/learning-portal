@@ -33,6 +33,30 @@
                 <div class="absolute bottom-[10%] right-[10%] w-32 h-32 bg-white/5 rounded-3xl rotate-12 backdrop-blur-3xl ring-1 ring-white/20"></div>
             </div>
 
+            <!-- Overall Progress Section -->
+            <div class="bg-white/60 backdrop-blur-md border border-white rounded-[32px] p-10 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-red-600/20">
+                            <TrendingUp class="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black tracking-tight">Overall Progress</h2>
+                            <p class="text-neutral-400 text-xs font-bold uppercase tracking-widest mt-1">{{ completed_lessons }} of {{ total_lessons }} lessons completed</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-4xl font-black tracking-tighter italic" :class="overall_progress === 100 ? 'text-green-600' : 'text-red-600'">{{ overall_progress }}%</p>
+                    </div>
+                </div>
+                <div class="h-4 bg-red-50 rounded-full overflow-hidden ring-1 ring-red-100/50">
+                    <div class="h-full rounded-full transition-all duration-1000 ease-out"
+                        :class="overall_progress === 100 ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-red-500 to-red-600'"
+                        :style="{ width: overall_progress + '%' }">
+                    </div>
+                </div>
+            </div>
+
             <!-- Modern Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div v-for="stat in stats" :key="stat.label"
@@ -77,16 +101,24 @@
                                 
                                 <div class="space-y-6">
                                     <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em]">
-                                        <span class="text-neutral-400">Sync Progress</span>
-                                        <span class="text-black">{{ course.progress }}%</span>
+                                        <span class="text-neutral-400">{{ course.completed_lessons }} / {{ course.total_lessons }} Lessons</span>
+                                        <span :class="course.progress === 100 ? 'text-green-600' : 'text-red-600'">{{ course.progress }}%</span>
                                     </div>
-                                    <div class="h-2 bg-red-100 rounded-full overflow-hidden p-0.5 ring-1 ring-red-200/50">
-                                        <div class="h-full bg-red-600 rounded-full transition-all duration-1000 ease-out" :style="{ width: course.progress + '%' }"></div>
+                                    <div class="h-2.5 bg-red-100 rounded-full overflow-hidden ring-1 ring-red-200/50">
+                                        <div class="h-full rounded-full transition-all duration-1000 ease-out"
+                                            :class="course.progress === 100 ? 'bg-green-500' : 'bg-red-600'"
+                                            :style="{ width: course.progress + '%' }">
+                                        </div>
                                     </div>
-                                    <Link :href="`/student/courses/${course.id}`" class="inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] group/link">
-                                        Jump Back In
-                                        <ChevronRight class="w-4 h-4 group-hover/link:translate-x-2 transition-transform" />
-                                    </Link>
+                                    <div class="flex items-center justify-between">
+                                        <Link :href="`/student/courses/${course.id}`" class="inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-red-600 hover:text-red-700 group/link">
+                                            {{ course.progress === 100 ? 'Review' : course.progress > 0 ? 'Continue' : 'Start' }}
+                                            <ChevronRight class="w-4 h-4 group-hover/link:translate-x-2 transition-transform" />
+                                        </Link>
+                                        <span v-if="course.progress === 100" class="text-[9px] font-black uppercase tracking-widest text-green-600 flex items-center gap-1">
+                                            <CheckCircle class="w-3.5 h-3.5" /> Done
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -122,18 +154,22 @@
 <script setup>
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import { Link } from '@inertiajs/vue3';
-import { 
-    ArrowRight, 
-    ChevronRight, 
-    Activity, 
-    CheckCircle, 
-    Clock, 
-    MessageSquare 
+import {
+    ArrowRight,
+    ChevronRight,
+    Activity,
+    CheckCircle,
+    Clock,
+    MessageSquare,
+    TrendingUp
 } from 'lucide-vue-next';
 
 defineProps({
     user: Object,
     recent_courses: Array,
     stats: Array,
+    overall_progress: Number,
+    total_lessons: Number,
+    completed_lessons: Number,
 });
 </script>

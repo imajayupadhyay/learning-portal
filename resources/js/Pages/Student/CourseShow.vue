@@ -21,7 +21,9 @@
                     <div class="max-w-xl">
                         <div class="flex items-center gap-3 mb-4">
                             <span class="px-3 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Now Playing</span>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-neutral-400">Lesson {{ currentLesson?.id }}</span>
+                            <span v-if="currentLesson?.completed" class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1">
+                                <CheckCircle2 class="w-3 h-3" /> Completed
+                            </span>
                         </div>
                         <h1 class="text-3xl font-black tracking-tight leading-tight">{{ currentLesson?.title || course.title }}</h1>
                         <p class="text-neutral-500 mt-4 font-medium flex items-center gap-2">
@@ -30,9 +32,20 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-4">
-                        <button class="flex items-center gap-3 px-8 py-4 border-2 border-neutral-100 rounded-2xl text-xs font-black uppercase tracking-widest hover:border-red-600 hover:text-red-600 transition-all group">
-                            <Download class="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
-                            Assets
+                        <!-- Mark Complete Button -->
+                        <button
+                            v-if="currentLesson"
+                            @click="toggleComplete(currentLesson.id)"
+                            :disabled="toggling"
+                            :class="[
+                                currentLesson.completed
+                                    ? 'bg-green-50 border-green-200 text-green-700 hover:bg-red-50 hover:border-red-200 hover:text-red-600'
+                                    : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-600 hover:text-white hover:border-red-600',
+                                'flex items-center gap-3 px-8 py-4 border-2 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 group disabled:opacity-50'
+                            ]"
+                        >
+                            <CheckCircle2 class="w-5 h-5 transition-transform group-hover:scale-110" />
+                            {{ currentLesson.completed ? 'Completed' : 'Mark Complete' }}
                         </button>
                     </div>
                 </div>
@@ -48,10 +61,15 @@
                         </div>
                         <!-- Overall Progress -->
                         <div class="mt-6">
-                            <div class="h-1 bg-red-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-red-600 rounded-full w-1/4 transition-all duration-1000"></div>
+                            <div class="h-1.5 bg-red-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000"
+                                    :class="progress === 100 ? 'bg-green-500' : 'bg-red-600'"
+                                    :style="{ width: progress + '%' }"></div>
                             </div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-neutral-400 mt-3">Course Progress: 25%</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-neutral-400">Course Progress</p>
+                                <p class="text-[10px] font-black uppercase tracking-widest" :class="progress === 100 ? 'text-green-600' : 'text-red-600'">{{ progress }}%</p>
+                            </div>
                         </div>
                     </div>
 
@@ -64,15 +82,23 @@
                             :class="[
                                 currentLesson?.id === lesson.id
                                     ? 'bg-red-600 text-white shadow-2xl shadow-red-600/20 translate-x-2'
-                                    : 'hover:bg-red-50 text-neutral-500 hover:text-red-600',
+                                    : lesson.completed
+                                        ? 'bg-green-50/50 text-green-700 hover:bg-green-50'
+                                        : 'hover:bg-red-50 text-neutral-500 hover:text-red-600',
                                 'w-full flex items-start gap-4 p-5 rounded-[24px] text-left transition-all duration-500 group relative overflow-hidden'
                             ]"
                         >
+                            <!-- Lesson Number / Check Icon -->
                             <div :class="[
-                                currentLesson?.id === lesson.id ? 'bg-white/20 text-white' : 'bg-red-50 text-red-400 group-hover:bg-red-600 group-hover:text-white',
+                                currentLesson?.id === lesson.id
+                                    ? 'bg-white/20 text-white'
+                                    : lesson.completed
+                                        ? 'bg-green-100 text-green-600'
+                                        : 'bg-red-50 text-red-400 group-hover:bg-red-600 group-hover:text-white',
                                 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black transition-all duration-500'
                             ]">
-                                {{ lesson.id.toString().padStart(2, '0') }}
+                                <CheckCircle2 v-if="lesson.completed && currentLesson?.id !== lesson.id" class="w-5 h-5" />
+                                <span v-else>{{ lesson.id.toString().padStart(2, '0') }}</span>
                             </div>
                             <div class="flex-1 min-w-0 pt-1">
                                 <span class="text-sm font-bold leading-tight block truncate group-hover:whitespace-normal transition-all">{{ lesson.title }}</span>
@@ -80,6 +106,7 @@
                                     <span class="text-[10px] font-bold uppercase tracking-widest opacity-60">
                                         {{ lesson.duration }}
                                     </span>
+                                    <span v-if="lesson.completed && currentLesson?.id !== lesson.id" class="text-[9px] font-black uppercase tracking-widest text-green-500">Done</span>
                                     <div v-if="currentLesson?.id === lesson.id" class="flex gap-1">
                                         <div v-for="i in 3" :key="i" class="w-1 h-1 rounded-full bg-white animate-pulse" :style="{ animationDelay: `${i * 200}ms` }"></div>
                                     </div>
@@ -90,11 +117,16 @@
 
                     <!-- Bottom Nav -->
                     <div class="p-6 border-t border-neutral-50 flex items-center justify-between">
-                         <button class="p-4 hover:bg-red-50 rounded-2xl transition-colors text-neutral-400 hover:text-red-600">
+                         <button @click="prevLesson" class="p-4 hover:bg-red-50 rounded-2xl transition-colors text-neutral-400 hover:text-red-600" :disabled="currentLessonIndex <= 0">
                              <ChevronLeft class="w-5 h-5" />
                          </button>
-                         <span class="text-xs font-black uppercase tracking-widest">Next Lesson</span>
-                         <button class="p-4 bg-red-600 text-white rounded-2xl hover:bg-red-700 transition-all">
+                         <button @click="toggleComplete(currentLesson?.id)" :disabled="toggling || !currentLesson"
+                            class="flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                            :class="currentLesson?.completed ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white'">
+                            <CheckCircle2 class="w-4 h-4" />
+                            {{ currentLesson?.completed ? 'Done' : 'Complete' }}
+                         </button>
+                         <button @click="nextLesson" class="p-4 bg-red-600 text-white rounded-2xl hover:bg-red-700 transition-all" :disabled="currentLessonIndex >= course.lessons.length - 1">
                              <ChevronRight class="w-5 h-5" />
                          </button>
                     </div>
@@ -105,23 +137,64 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { router } from '@inertiajs/vue3';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
-import { 
-    PlayCircle, 
-    Download, 
-    CheckCircle2, 
-    ChevronRight, 
+import {
+    PlayCircle,
+    CheckCircle2,
+    ChevronRight,
     ChevronLeft,
-    User,
-    Clock
+    User
 } from 'lucide-vue-next';
 
 const props = defineProps({
     course: Object,
+    progress: Number,
+    completedLessonIds: Array,
 });
 
 const currentLesson = ref(props.course.lessons[0]);
+const toggling = ref(false);
+
+const currentLessonIndex = computed(() => {
+    return props.course.lessons.findIndex(l => l.id === currentLesson.value?.id);
+});
+
+const nextLesson = () => {
+    const idx = currentLessonIndex.value;
+    if (idx < props.course.lessons.length - 1) {
+        currentLesson.value = props.course.lessons[idx + 1];
+    }
+};
+
+const prevLesson = () => {
+    const idx = currentLessonIndex.value;
+    if (idx > 0) {
+        currentLesson.value = props.course.lessons[idx - 1];
+    }
+};
+
+const toggleComplete = (lessonId) => {
+    if (!lessonId || toggling.value) return;
+    toggling.value = true;
+
+    router.post('/student/lessons/toggle-complete', {
+        lesson_id: lessonId,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            const lesson = props.course.lessons.find(l => l.id === lessonId);
+            if (lesson) {
+                lesson.completed = !lesson.completed;
+            }
+            toggling.value = false;
+        },
+        onError: () => {
+            toggling.value = false;
+        },
+    });
+};
 </script>
 
 <style scoped>
