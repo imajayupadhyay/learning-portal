@@ -28,6 +28,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo(function ($request) {
+            $user = $request->user();
+            if ($user && $user->role === 'admin') {
+                return '/admin/dashboard';
+            }
+            return '/student/dashboard';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
