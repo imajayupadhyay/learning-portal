@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CourseController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -19,6 +20,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/students', [StudentController::class, 'store'])->name('admin.students.store');
     Route::put('/students/{student}', [StudentController::class, 'update'])->name('admin.students.update');
     Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
+
+    // Courses CRUD
+    Route::get('/courses', [CourseController::class, 'index'])->name('admin.courses');
+    Route::post('/courses', [CourseController::class, 'store'])->name('admin.courses.store');
+    Route::put('/courses/{course}', [CourseController::class, 'update'])->name('admin.courses.update');
+    Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('admin.courses.destroy');
+
+    // Course Lessons
+    Route::get('/courses/{course}/lessons', [CourseController::class, 'show'])->name('admin.courses.show');
+    Route::post('/courses/{course}/lessons', [CourseController::class, 'storeLesson'])->name('admin.courses.lessons.store');
+    Route::put('/courses/{course}/lessons/{lesson}', [CourseController::class, 'updateLesson'])->name('admin.courses.lessons.update');
+    Route::delete('/courses/{course}/lessons/{lesson}', [CourseController::class, 'destroyLesson'])->name('admin.courses.lessons.destroy');
 
     // Admins CRUD
     Route::get('/admins', [AdminController::class, 'index'])->name('admin.admins');

@@ -106,6 +106,7 @@ import {
     LayoutDashboard,
     Users,
     ShieldCheck,
+    BookOpen,
     LogOut,
     ChevronRight
 } from 'lucide-vue-next';
@@ -114,11 +115,15 @@ const page = usePage();
 
 const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, component: 'Admin/Dashboard' },
+    { name: 'Courses', href: '/admin/courses', icon: BookOpen, component: 'Admin/Courses' },
     { name: 'Students', href: '/admin/students', icon: Users, component: 'Admin/Students' },
     { name: 'Admins', href: '/admin/admins', icon: ShieldCheck, component: 'Admin/Admins' },
 ];
 
 const isActive = (component) => {
+    if (component === 'Admin/Courses') {
+        return page.component === 'Admin/Courses' || page.component === 'Admin/CourseShow';
+    }
     return page.component === component || page.component.startsWith(component + '/');
 };
 

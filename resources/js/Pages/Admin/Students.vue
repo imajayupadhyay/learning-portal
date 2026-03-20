@@ -75,55 +75,54 @@
                 <p class="text-neutral-500 font-medium max-w-md mx-auto">{{ search ? 'No students match your search.' : 'No student accounts registered yet.' }}</p>
             </div>
 
-            <!-- Slide-over Panel -->
-            <div v-if="showModal" class="fixed inset-0 z-[60] flex items-center justify-center">
-                <!-- Backdrop -->
-                <div class="absolute inset-0" @click="closeModal"></div>
-                <!-- Centered Modal -->
-                <div class="relative w-full max-w-lg bg-white rounded-[32px] shadow-2xl shadow-black/20 overflow-y-auto max-h-[90vh]">
-                    <div class="p-8 pb-0 flex items-center justify-between">
-                        <h2 class="text-2xl font-black tracking-tight">{{ editing ? 'Edit Student' : 'Add Student' }}</h2>
-                        <button @click="closeModal" class="p-2 hover:bg-neutral-100 rounded-xl transition-colors">
-                            <X class="w-5 h-5 text-neutral-400" />
-                        </button>
+            <Teleport to="body">
+                <div v-if="showModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/50" @click="closeModal"></div>
+                    <div class="relative w-full max-w-lg bg-white rounded-[32px] shadow-2xl overflow-y-auto max-h-[90vh]">
+                        <div class="p-8 pb-0 flex items-center justify-between">
+                            <h2 class="text-2xl font-black tracking-tight">{{ editing ? 'Edit Student' : 'Add Student' }}</h2>
+                            <button @click="closeModal" class="p-2 hover:bg-neutral-100 rounded-xl transition-colors">
+                                <X class="w-5 h-5 text-neutral-400" />
+                            </button>
+                        </div>
+                        <form @submit.prevent="submitForm" class="p-8 space-y-5">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Full Name *</label>
+                                <input v-model="form.name" type="text" required
+                                    class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
+                                    placeholder="John Doe" />
+                                <p v-if="form.errors.name" class="text-sm text-red-500">{{ form.errors.name }}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Email *</label>
+                                <input v-model="form.email" type="email" required
+                                    class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
+                                    placeholder="student@example.com" />
+                                <p v-if="form.errors.email" class="text-sm text-red-500">{{ form.errors.email }}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">
+                                    Password {{ editing ? '(leave blank to keep current)' : '*' }}
+                                </label>
+                                <input v-model="form.password" type="password" :required="!editing"
+                                    class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
+                                    placeholder="Min. 8 characters" />
+                                <p v-if="form.errors.password" class="text-sm text-red-500">{{ form.errors.password }}</p>
+                            </div>
+                            <div class="flex items-center gap-4 pt-2">
+                                <button type="submit" :disabled="form.processing"
+                                    class="flex-1 py-4 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-xl hover:shadow-red-600/20 transition-all disabled:opacity-50">
+                                    {{ form.processing ? 'Saving...' : editing ? 'Save Changes' : 'Add Student' }}
+                                </button>
+                                <button type="button" @click="closeModal"
+                                    class="px-8 py-4 bg-neutral-100 text-neutral-500 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-neutral-200 transition-all">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <form @submit.prevent="submitForm" class="p-8 space-y-5">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Full Name *</label>
-                            <input v-model="form.name" type="text" required
-                                class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
-                                placeholder="John Doe" />
-                            <p v-if="form.errors.name" class="text-sm text-red-500">{{ form.errors.name }}</p>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Email *</label>
-                            <input v-model="form.email" type="email" required
-                                class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
-                                placeholder="student@example.com" />
-                            <p v-if="form.errors.email" class="text-sm text-red-500">{{ form.errors.email }}</p>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">
-                                Password {{ editing ? '(leave blank to keep current)' : '*' }}
-                            </label>
-                            <input v-model="form.password" type="password" :required="!editing"
-                                class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
-                                placeholder="Min. 8 characters" />
-                            <p v-if="form.errors.password" class="text-sm text-red-500">{{ form.errors.password }}</p>
-                        </div>
-                        <div class="flex items-center gap-4 pt-2">
-                            <button type="submit" :disabled="form.processing"
-                                class="flex-1 py-4 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-xl hover:shadow-red-600/20 transition-all disabled:opacity-50">
-                                {{ form.processing ? 'Saving...' : editing ? 'Save Changes' : 'Add Student' }}
-                            </button>
-                            <button type="button" @click="closeModal"
-                                class="px-8 py-4 bg-neutral-100 text-neutral-500 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-neutral-200 transition-all">
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
                 </div>
-            </div>
+            </Teleport>
         </div>
     </AdminLayout>
 </template>
