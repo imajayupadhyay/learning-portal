@@ -9,7 +9,8 @@
                         v-if="currentLesson"
                         :src="`https://drive.google.com/file/d/${currentLesson.video_id}/preview`"
                         class="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700"
-                        allow="autoplay"
+                        allow="autoplay; fullscreen"
+                        allowfullscreen
                     ></iframe>
                     <div v-else class="w-full h-full flex items-center justify-center">
                         <PlayCircle class="w-20 h-20 text-white/20 animate-pulse" />
@@ -76,7 +77,7 @@
                     <!-- Lesson List -->
                     <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                         <button
-                            v-for="lesson in course.lessons"
+                            v-for="(lesson, index) in course.lessons"
                             :key="lesson.id"
                             @click="currentLesson = lesson"
                             :class="[
@@ -98,7 +99,7 @@
                                 'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-black transition-all duration-500'
                             ]">
                                 <CheckCircle2 v-if="lesson.completed && currentLesson?.id !== lesson.id" class="w-5 h-5" />
-                                <span v-else>{{ lesson.id.toString().padStart(2, '0') }}</span>
+                                <span v-else>{{ (index + 1).toString().padStart(2, '0') }}</span>
                             </div>
                             <div class="flex-1 min-w-0 pt-1">
                                 <span class="text-sm font-bold leading-tight block truncate group-hover:whitespace-normal transition-all">{{ lesson.title }}</span>

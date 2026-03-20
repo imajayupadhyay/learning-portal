@@ -27,46 +27,46 @@
             </div>
 
             <!-- Courses Grid -->
-            <div v-if="courses.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div v-if="courses.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div v-for="course in courses" :key="course.id"
-                    class="group bg-white/60 backdrop-blur-md border border-white rounded-[28px] overflow-hidden hover:shadow-xl hover:shadow-black/5 transition-all duration-500">
+                    class="group bg-white/60 backdrop-blur-md border border-white rounded-[24px] overflow-hidden hover:shadow-xl hover:shadow-black/5 transition-all duration-500">
 
                     <!-- Image -->
-                    <div class="aspect-[16/9] overflow-hidden relative bg-neutral-100">
+                    <div class="aspect-[16/10] overflow-hidden relative bg-neutral-100">
                         <img v-if="course.image" :src="course.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                         <div v-else class="w-full h-full flex items-center justify-center">
-                            <BookOpen class="w-12 h-12 text-neutral-300" />
+                            <BookOpen class="w-10 h-10 text-neutral-300" />
                         </div>
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-black shadow-sm">
+                        <div class="absolute top-3 right-3">
+                            <span class="px-2.5 py-1 bg-white/90 backdrop-blur-md rounded-lg text-[9px] font-black uppercase tracking-widest text-black shadow-sm">
                                 {{ course.lessons_count }} Lessons
                             </span>
                         </div>
                     </div>
 
                     <!-- Info -->
-                    <div class="p-8">
-                        <h3 class="text-xl font-black tracking-tight leading-tight mb-2">{{ course.title }}</h3>
-                        <p class="text-neutral-500 text-sm font-medium line-clamp-2 mb-4">{{ course.description || 'No description provided.' }}</p>
+                    <div class="p-5">
+                        <h3 class="text-base font-black tracking-tight leading-tight mb-1.5">{{ course.title }}</h3>
+                        <p class="text-neutral-500 text-xs font-medium line-clamp-2 mb-3">{{ course.description || 'No description provided.' }}</p>
 
-                        <div class="flex items-center gap-3 mb-6">
-                            <span class="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-[9px] font-black uppercase tracking-widest">{{ course.instructor }}</span>
-                            <span class="text-[10px] font-bold text-neutral-400 tracking-wide">Added {{ course.created_at }}</span>
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-2.5 py-0.5 bg-red-50 text-red-600 rounded-lg text-[9px] font-black uppercase tracking-widest">{{ course.instructor }}</span>
+                            <span class="text-[9px] font-bold text-neutral-400 tracking-wide">{{ course.created_at }}</span>
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex items-center gap-2 pt-6 border-t border-neutral-100">
+                        <div class="flex items-center gap-1.5 pt-4 border-t border-neutral-100">
                             <Link :href="`/admin/courses/${course.id}/lessons`"
-                                class="flex-1 flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-600 transition-all">
-                                <ListVideo class="w-3.5 h-3.5" /> Lessons
+                                class="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-red-50 hover:bg-red-100 rounded-xl text-[9px] font-black uppercase tracking-widest text-red-600 transition-all">
+                                <ListVideo class="w-3 h-3" /> Lessons
                             </Link>
                             <button @click="openEdit(course)"
-                                class="flex-1 flex items-center justify-center gap-2 py-3 bg-neutral-50 hover:bg-neutral-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-neutral-500 transition-all">
-                                <Pencil class="w-3.5 h-3.5" /> Edit
+                                class="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-neutral-50 hover:bg-neutral-100 rounded-xl text-[9px] font-black uppercase tracking-widest text-neutral-500 transition-all">
+                                <Pencil class="w-3 h-3" /> Edit
                             </button>
                             <button @click="deleteCourse(course.id)"
-                                class="flex items-center justify-center gap-2 py-3 px-4 bg-neutral-50 hover:bg-red-50 rounded-xl text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-red-600 transition-all">
-                                <Trash2 class="w-3.5 h-3.5" />
+                                class="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-neutral-50 hover:bg-red-50 rounded-xl text-[9px] font-black uppercase tracking-widest text-neutral-400 hover:text-red-600 transition-all">
+                                <Trash2 class="w-3 h-3" />
                             </button>
                         </div>
                     </div>
