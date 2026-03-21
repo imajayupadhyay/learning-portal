@@ -8,12 +8,49 @@
             <div class="flex-1 flex flex-col gap-4 lg:gap-8 min-w-0">
                 <!-- Video Player -->
                 <div class="bg-black rounded-xl lg:rounded-[40px] overflow-hidden shadow-2xl relative group ring-1 ring-white/10 aspect-video">
+                    <!-- Loading Overlay -->
+                    <div v-if="currentLesson && videoLoading" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm">
+                        <div class="relative mb-6">
+                            <div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-[3px] border-white/10"></div>
+                            <div class="absolute inset-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full border-[3px] border-transparent border-t-indigo-500 animate-spin"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <PlayCircle class="w-6 h-6 lg:w-8 lg:h-8 text-white/60" />
+                            </div>
+                        </div>
+                        <p class="text-white/70 text-xs lg:text-sm font-medium">Loading video...</p>
+                        <div class="mt-3 w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full animate-loading-bar"></div>
+                        </div>
+                        <p class="text-white/30 text-[9px] lg:text-[10px] font-bold uppercase tracking-widest mt-4">{{ currentLesson.title }}</p>
+                    </div>
+
+                    <!-- Error / Timeout State -->
+                    <div v-if="currentLesson && videoError" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm">
+                        <div class="w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-5">
+                            <AlertTriangle class="w-7 h-7 lg:w-8 lg:h-8 text-red-400" />
+                        </div>
+                        <h3 class="text-white font-heading font-bold text-sm lg:text-base mb-1.5">Video Unavailable</h3>
+                        <p class="text-white/50 text-[10px] lg:text-xs font-medium text-center max-w-xs px-4 mb-5">This video is taking too long to load. This could be a network issue or the video may not be available.</p>
+                        <div class="flex items-center gap-3">
+                            <button @click="retryVideo" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-indigo-600 transition-all">
+                                <RefreshCw class="w-3.5 h-3.5" />
+                                Retry
+                            </button>
+                            <button v-if="currentLessonIndex < course.lessons.length - 1" @click="skipToNext" class="flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white/70 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-white/20 transition-all">
+                                Skip
+                                <ChevronRight class="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+                    </div>
+
                     <iframe
                         v-if="currentLesson"
+                        :key="videoKey"
                         :src="`https://drive.google.com/file/d/${currentLesson.video_id}/preview`"
-                        class="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700"
+                        class="w-full h-full border-0"
                         allow="autoplay; fullscreen"
                         allowfullscreen
+                        @load="onVideoLoaded"
                     ></iframe>
                     <div v-else class="w-full h-full flex items-center justify-center">
                         <PlayCircle class="w-16 h-16 lg:w-20 lg:h-20 text-white/20 animate-pulse" />
@@ -139,7 +176,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import {
@@ -147,7 +184,9 @@ import {
     CheckCircle2,
     ChevronRight,
     ChevronLeft,
-    User
+    User,
+    AlertTriangle,
+    RefreshCw
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -158,10 +197,51 @@ const props = defineProps({
 
 const currentLesson = ref(props.course.lessons[0]);
 const toggling = ref(false);
+const videoLoading = ref(true);
+const videoError = ref(false);
+const videoKey = ref(0);
+let loadTimeout = null;
 
 const currentLessonIndex = computed(() => {
     return props.course.lessons.findIndex(l => l.id === currentLesson.value?.id);
 });
+
+// Video loading handlers
+const startLoadTimer = () => {
+    videoLoading.value = true;
+    videoError.value = false;
+    clearTimeout(loadTimeout);
+    loadTimeout = setTimeout(() => {
+        if (videoLoading.value) {
+            videoLoading.value = false;
+            videoError.value = true;
+        }
+    }, 30000);
+};
+
+const onVideoLoaded = () => {
+    clearTimeout(loadTimeout);
+    videoLoading.value = false;
+    videoError.value = false;
+};
+
+const retryVideo = () => {
+    videoKey.value++;
+    startLoadTimer();
+};
+
+const skipToNext = () => {
+    nextLesson();
+};
+
+// Watch for lesson changes to reset loading state
+watch(currentLesson, () => {
+    videoKey.value++;
+    startLoadTimer();
+});
+
+// Start timer for first lesson
+startLoadTimer();
 
 const nextLesson = () => {
     const idx = currentLessonIndex.value;
@@ -176,6 +256,10 @@ const prevLesson = () => {
         currentLesson.value = props.course.lessons[idx - 1];
     }
 };
+
+onUnmounted(() => {
+    clearTimeout(loadTimeout);
+});
 
 const toggleComplete = (lessonId) => {
     if (!lessonId || toggling.value) return;
@@ -215,5 +299,15 @@ const toggleComplete = (lessonId) => {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #6366F1;
+}
+@keyframes loading-bar {
+    0% { width: 0%; }
+    20% { width: 20%; }
+    50% { width: 60%; }
+    80% { width: 85%; }
+    100% { width: 95%; }
+}
+.animate-loading-bar {
+    animation: loading-bar 8s ease-out forwards;
 }
 </style>
