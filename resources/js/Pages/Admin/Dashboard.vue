@@ -1,4 +1,7 @@
 <template>
+    <Head title="Admin Dashboard">
+        <meta name="description" content="Admin dashboard — manage courses, students, and platform overview." />
+    </Head>
     <AdminLayout>
         <div class="space-y-10 pb-12">
             <!-- Hero Welcome Panel -->
@@ -136,6 +139,7 @@
 </template>
 
 <script setup>
+import { Head } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { BookOpen, PlayCircle, Users, ChevronRight } from 'lucide-vue-next';
 

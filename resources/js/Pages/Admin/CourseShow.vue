@@ -1,4 +1,7 @@
 <template>
+    <Head :title="course.title">
+        <meta name="description" :content="`Manage lessons and content for ${course.title}.`" />
+    </Head>
     <AdminLayout>
         <div class="space-y-10 pb-12 relative">
             <!-- Page Header -->
@@ -141,7 +144,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { router, useForm, Link } from '@inertiajs/vue3';
+import { Head, router, useForm, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Plus, ArrowLeft, ListVideo, Pencil, Trash2, X } from 'lucide-vue-next';
 

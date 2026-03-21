@@ -1,4 +1,7 @@
 <template>
+    <Head title="Login">
+        <meta name="description" content="Sign in to your student portal to access courses and track your learning progress." />
+    </Head>
     <div class="min-h-screen bg-[#FAFAF9] dark:bg-stone-950 flex items-center justify-center px-4 font-body transition-colors duration-300">
         <div class="w-full max-w-md">
             <!-- Dark Mode Toggle -->
@@ -235,7 +238,7 @@
 </template>
 
 <script setup>
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { useDarkMode } from '@/composables/useDarkMode';
 

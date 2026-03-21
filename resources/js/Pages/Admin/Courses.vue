@@ -1,4 +1,7 @@
 <template>
+    <Head title="Courses">
+        <meta name="description" content="Manage all courses — add, edit, and organize learning content." />
+    </Head>
     <AdminLayout>
         <div class="space-y-10 pb-12 relative">
             <!-- Page Header -->
@@ -192,7 +195,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { router, useForm, Link } from '@inertiajs/vue3';
+import { Head, router, useForm, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Plus, Search, BookOpen, ListVideo, Pencil, Trash2, X, Upload, LinkIcon } from 'lucide-vue-next';
 

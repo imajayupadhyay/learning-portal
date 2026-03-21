@@ -1,18 +1,21 @@
 <template>
+    <Head title="My Profile">
+        <meta name="description" content="Update your personal details, education, and social links." />
+    </Head>
     <StudentLayout>
-        <div class="max-w-5xl space-y-10 pb-12">
+        <div class="max-w-5xl space-y-6 lg:space-y-10 pb-8 lg:pb-12">
             <div>
-                <h1 class="text-5xl font-heading font-extrabold tracking-tighter text-stone-800 dark:text-stone-100 mb-4">My Profile.</h1>
-                <p class="text-stone-500 dark:text-stone-400 text-lg font-medium">Complete your profile to stand out and track your learning journey.</p>
+                <h1 class="text-3xl lg:text-5xl font-heading font-extrabold tracking-tighter text-stone-800 dark:text-stone-100 mb-2 lg:mb-4">My Profile.</h1>
+                <p class="text-stone-500 dark:text-stone-400 text-sm lg:text-lg font-medium">Complete your profile to stand out and track your learning journey.</p>
             </div>
 
             <form @submit.prevent="submitForm">
                 <!-- Avatar & Basic Info -->
-                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-[32px] p-10 shadow-sm dark:shadow-stone-950/20 mb-8">
-                    <div class="flex flex-col md:flex-row items-start gap-8">
-                        <div class="shrink-0">
+                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-2xl lg:rounded-[32px] p-5 lg:p-10 shadow-sm dark:shadow-stone-950/20 mb-5 lg:mb-8">
+                    <div class="flex flex-col md:flex-row items-start gap-5 lg:gap-8">
+                        <div class="shrink-0 mx-auto md:mx-0">
                             <label class="cursor-pointer group relative block">
-                                <div class="w-28 h-28 rounded-[24px] overflow-hidden bg-indigo-50 dark:bg-indigo-950/50 border-2 border-dashed border-indigo-200 dark:border-indigo-800 group-hover:border-indigo-400 dark:group-hover:border-indigo-600 transition-colors">
+                                <div class="w-24 h-24 lg:w-28 lg:h-28 rounded-2xl lg:rounded-[24px] overflow-hidden bg-indigo-50 dark:bg-indigo-950/50 border-2 border-dashed border-indigo-200 dark:border-indigo-800 group-hover:border-indigo-400 dark:group-hover:border-indigo-600 transition-colors">
                                     <img v-if="avatarPreview" :src="avatarPreview" class="w-full h-full object-cover" />
                                     <div v-else class="w-full h-full flex flex-col items-center justify-center gap-2">
                                         <Camera class="w-6 h-6 text-indigo-300 dark:text-indigo-600" />
@@ -26,8 +29,8 @@
                             </label>
                         </div>
 
-                        <div class="flex-1 w-full space-y-5">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="flex-1 w-full space-y-4 lg:space-y-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
                                 <div class="space-y-2">
                                     <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">Full Name *</label>
                                     <input v-model="form.name" type="text" required
@@ -52,14 +55,14 @@
                 </div>
 
                 <!-- Personal Details -->
-                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-[32px] p-10 shadow-sm dark:shadow-stone-950/20 mb-8">
-                    <h2 class="text-2xl font-heading font-extrabold tracking-tight mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
-                        <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
-                            <UserIcon class="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-2xl lg:rounded-[32px] p-5 lg:p-10 shadow-sm dark:shadow-stone-950/20 mb-5 lg:mb-8">
+                    <h2 class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight mb-5 lg:mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
+                        <div class="w-9 h-9 lg:w-10 lg:h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
+                            <UserIcon class="w-4 h-4 lg:w-5 lg:h-5 text-indigo-500 dark:text-indigo-400" />
                         </div>
                         Personal Details
                     </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">Phone Number</label>
                             <input v-model="form.phone" type="tel"
@@ -85,14 +88,14 @@
                 </div>
 
                 <!-- Education & Interests -->
-                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-[32px] p-10 shadow-sm dark:shadow-stone-950/20 mb-8">
-                    <h2 class="text-2xl font-heading font-extrabold tracking-tight mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
-                        <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
-                            <GraduationCap class="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-2xl lg:rounded-[32px] p-5 lg:p-10 shadow-sm dark:shadow-stone-950/20 mb-5 lg:mb-8">
+                    <h2 class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight mb-5 lg:mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
+                        <div class="w-9 h-9 lg:w-10 lg:h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
+                            <GraduationCap class="w-4 h-4 lg:w-5 lg:h-5 text-indigo-500 dark:text-indigo-400" />
                         </div>
                         Education & Interests
                     </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 mb-4 lg:mb-5">
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">Education Level</label>
                             <select v-model="form.education"
@@ -124,21 +127,21 @@
                 </div>
 
                 <!-- Address -->
-                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-[32px] p-10 shadow-sm dark:shadow-stone-950/20 mb-8">
-                    <h2 class="text-2xl font-heading font-extrabold tracking-tight mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
-                        <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
-                            <MapPin class="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-2xl lg:rounded-[32px] p-5 lg:p-10 shadow-sm dark:shadow-stone-950/20 mb-5 lg:mb-8">
+                    <h2 class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight mb-5 lg:mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
+                        <div class="w-9 h-9 lg:w-10 lg:h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
+                            <MapPin class="w-4 h-4 lg:w-5 lg:h-5 text-indigo-500 dark:text-indigo-400" />
                         </div>
                         Address
                     </h2>
-                    <div class="space-y-5">
+                    <div class="space-y-4 lg:space-y-5">
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">Street Address</label>
                             <input v-model="form.address" type="text"
                                 class="w-full px-5 py-4 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl text-stone-800 dark:text-stone-100 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                                 placeholder="123 Main Street, Apt 4B" />
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-5">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">City</label>
                                 <input v-model="form.city" type="text"
@@ -168,14 +171,14 @@
                 </div>
 
                 <!-- Social Links -->
-                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-[32px] p-10 shadow-sm dark:shadow-stone-950/20 mb-8">
-                    <h2 class="text-2xl font-heading font-extrabold tracking-tight mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
-                        <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
-                            <Globe class="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+                <div class="bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 rounded-2xl lg:rounded-[32px] p-5 lg:p-10 shadow-sm dark:shadow-stone-950/20 mb-5 lg:mb-8">
+                    <h2 class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight mb-5 lg:mb-8 flex items-center gap-3 text-stone-800 dark:text-stone-100">
+                        <div class="w-9 h-9 lg:w-10 lg:h-10 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl flex items-center justify-center">
+                            <Globe class="w-4 h-4 lg:w-5 lg:h-5 text-indigo-500 dark:text-indigo-400" />
                         </div>
                         Social Links
                     </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">LinkedIn</label>
                             <input v-model="form.linkedin" type="text"
@@ -192,14 +195,14 @@
                 </div>
 
                 <!-- Save Button -->
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
                     <div v-if="saved" class="flex items-center gap-2 text-teal-500">
                         <CheckCircle class="w-5 h-5" />
                         <span class="text-sm font-bold">Profile saved successfully!</span>
                     </div>
                     <div v-else></div>
                     <button type="submit" :disabled="processing"
-                        class="px-12 py-4 bg-indigo-500 text-white rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all disabled:opacity-50">
+                        class="w-full sm:w-auto px-8 lg:px-12 py-3.5 lg:py-4 bg-indigo-500 text-white rounded-xl lg:rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all disabled:opacity-50">
                         {{ processing ? 'Saving...' : 'Save Profile' }}
                     </button>
                 </div>
@@ -210,7 +213,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import { Camera, UserIcon, GraduationCap, MapPin, Globe, CheckCircle } from 'lucide-vue-next';
 

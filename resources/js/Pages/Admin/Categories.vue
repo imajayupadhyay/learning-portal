@@ -1,4 +1,7 @@
 <template>
+    <Head title="Categories">
+        <meta name="description" content="Manage course categories and subcategories." />
+    </Head>
     <AdminLayout>
         <div class="space-y-10 pb-12 relative">
             <!-- Page Header -->
@@ -143,7 +146,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Plus, FolderTree, Pencil, Trash2, X, CornerDownRight } from 'lucide-vue-next';
 

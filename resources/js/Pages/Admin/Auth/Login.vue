@@ -1,4 +1,7 @@
 <template>
+    <Head title="Admin Login">
+        <meta name="description" content="Admin login portal for LMS management." />
+    </Head>
     <div class="min-h-screen bg-white flex items-center justify-center px-4">
         <div class="w-full max-w-md">
             <div class="text-center mb-10">
@@ -81,7 +84,7 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const showPassword = ref(false);

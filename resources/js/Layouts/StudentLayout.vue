@@ -7,40 +7,58 @@
             <div class="absolute bottom-[10%] left-[30%] w-[25%] h-[25%] rounded-full bg-indigo-50/30 dark:bg-indigo-950/20 blur-[100px]"></div>
         </div>
 
+        <!-- Mobile Overlay Backdrop -->
+        <Transition name="fade">
+            <div
+                v-if="sidebarOpen"
+                class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+                @click="sidebarOpen = false"
+            ></div>
+        </Transition>
+
         <!-- Sidebar -->
-        <aside class="fixed top-4 left-4 bottom-4 w-[280px] bg-white/70 dark:bg-stone-900/80 backdrop-blur-2xl border border-indigo-100/30 dark:border-stone-700/50 z-50 rounded-[32px] shadow-[0_8px_32px_rgba(99,102,241,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-500 group">
+        <aside :class="[
+            'fixed top-0 left-0 bottom-0 w-[280px] bg-white/95 dark:bg-stone-900/95 lg:bg-white/70 lg:dark:bg-stone-900/80 backdrop-blur-2xl border-r lg:border border-indigo-100/30 dark:border-stone-700/50 z-50 shadow-[0_8px_32px_rgba(99,102,241,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-out',
+            'lg:top-4 lg:left-4 lg:bottom-4 lg:rounded-[32px] lg:border-r-0',
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        ]">
             <div class="flex flex-col h-full">
                 <!-- Logo Area -->
-                <div class="h-24 flex items-center px-10">
-                    <Link href="/student/dashboard" class="flex items-center gap-3 group/logo">
-                        <div class="w-11 h-11 bg-indigo-500 rounded-2xl flex items-center justify-center transition-all group-hover/logo:scale-110 group-hover/logo:rotate-3 duration-500 shadow-xl shadow-indigo-500/20">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="h-20 lg:h-24 flex items-center justify-between px-6 lg:px-10">
+                    <Link href="/student/dashboard" class="flex items-center gap-3 group/logo" @click="closeSidebarOnMobile">
+                        <div class="w-10 h-10 lg:w-11 lg:h-11 bg-indigo-500 rounded-2xl flex items-center justify-center transition-all group-hover/logo:scale-110 group-hover/logo:rotate-3 duration-500 shadow-xl shadow-indigo-500/20">
+                            <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                         </div>
-                        <span class="text-2xl font-heading font-extrabold tracking-tight text-stone-800 dark:text-stone-100">LMS</span>
+                        <span class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight text-stone-800 dark:text-stone-100">LMS</span>
                     </Link>
+                    <!-- Close button (mobile only) -->
+                    <button @click="sidebarOpen = false" class="lg:hidden p-2 -mr-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+                        <X class="w-5 h-5 text-stone-400" />
+                    </button>
                 </div>
 
                 <!-- Navigation -->
-                <nav class="flex-1 px-4 py-6 space-y-1.5">
+                <nav class="flex-1 px-3 lg:px-4 py-4 lg:py-6 space-y-1">
                     <Link
                         v-for="item in navigation"
                         :key="item.name"
                         :href="item.href"
+                        @click="closeSidebarOnMobile"
                         :class="[
                             isActive(item.component)
                                 ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-[1.02]'
                                 : 'text-stone-500 dark:text-stone-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/50 hover:translate-x-1',
-                            'group flex items-center px-6 py-3.5 text-sm font-semibold rounded-2xl transition-all duration-500'
+                            'group flex items-center px-5 lg:px-6 py-3 lg:py-3.5 text-sm font-semibold rounded-2xl transition-all duration-500'
                         ]"
                     >
                         <component
                             :is="item.icon"
                             :class="[
                                 isActive(item.component) ? 'text-white' : 'text-stone-400 dark:text-stone-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400',
-                                'mr-4 h-5 w-5 transition-colors duration-500'
+                                'mr-3 lg:mr-4 h-5 w-5 transition-colors duration-500'
                             ]"
                             stroke-width="2"
                         />
@@ -49,12 +67,12 @@
                 </nav>
 
                 <!-- Footer User Info -->
-                <div class="p-6">
+                <div class="p-4 lg:p-6">
                     <button
                         @click="logout"
-                        class="w-full flex items-center px-6 py-3.5 text-sm font-semibold text-stone-400 dark:text-stone-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/50 rounded-2xl transition-all duration-500 group"
+                        class="w-full flex items-center px-5 lg:px-6 py-3 lg:py-3.5 text-sm font-semibold text-stone-400 dark:text-stone-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/50 rounded-2xl transition-all duration-500 group"
                     >
-                        <LogOut class="mr-4 h-5 w-5 transition-colors" stroke-width="2" />
+                        <LogOut class="mr-3 lg:mr-4 h-5 w-5 transition-colors" stroke-width="2" />
                         Sign Out
                     </button>
                 </div>
@@ -62,34 +80,38 @@
         </aside>
 
         <!-- Main Workspace -->
-        <div class="pl-[312px] pr-8 min-h-screen relative z-10">
+        <div class="px-4 lg:pl-[312px] lg:pr-8 min-h-screen relative z-10">
             <!-- Header -->
-            <header class="h-20 bg-white/50 dark:bg-stone-900/50 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 sticky top-4 z-40 px-10 rounded-[24px] shadow-sm dark:shadow-stone-950/20 flex items-center justify-between mb-8 transition-all duration-500">
-                <div class="flex items-center gap-6">
+            <header class="h-16 lg:h-20 bg-white/50 dark:bg-stone-900/50 backdrop-blur-md border border-indigo-100/20 dark:border-stone-700/50 sticky top-2 lg:top-4 z-30 px-4 lg:px-10 rounded-2xl lg:rounded-[24px] shadow-sm dark:shadow-stone-950/20 flex items-center justify-between mb-4 lg:mb-8 transition-all duration-500">
+                <div class="flex items-center gap-3 lg:gap-6">
+                    <!-- Hamburger (mobile only) -->
+                    <button @click="sidebarOpen = true" class="lg:hidden p-2 -ml-1 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+                        <Menu class="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                    </button>
                     <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500">
-                        <span class="hover:text-stone-700 dark:hover:text-stone-300 cursor-pointer transition-colors">Portal</span>
-                        <ChevronRight class="w-3 h-3" />
+                        <span class="hidden sm:inline hover:text-stone-700 dark:hover:text-stone-300 cursor-pointer transition-colors">Portal</span>
+                        <ChevronRight class="hidden sm:block w-3 h-3" />
                         <span class="text-indigo-500 dark:text-indigo-400 font-semibold">{{ currentPageName }}</span>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 lg:gap-4">
                     <!-- Dark Mode Toggle -->
                     <button
                         @click="toggle"
-                        class="p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-300"
+                        class="p-2 lg:p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-300"
                         :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
                     >
                         <Sun v-if="isDark" class="w-5 h-5 text-amber-400" />
                         <Moon v-else class="w-5 h-5 text-stone-400" />
                     </button>
 
-                    <div class="flex items-center gap-4 group cursor-pointer p-1.5 pr-4 rounded-2xl hover:bg-white/80 dark:hover:bg-stone-800/80 transition-all duration-500">
+                    <div class="flex items-center gap-3 lg:gap-4 group cursor-pointer p-1 lg:p-1.5 lg:pr-4 rounded-2xl hover:bg-white/80 dark:hover:bg-stone-800/80 transition-all duration-500">
                         <div class="relative">
-                            <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-[10px] font-bold shadow-lg shadow-indigo-500/20 group-hover:rotate-12 transition-transform duration-500">
+                            <div class="w-9 h-9 lg:w-10 lg:h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-[10px] font-bold shadow-lg shadow-indigo-500/20 group-hover:rotate-12 transition-transform duration-500">
                                 {{ initials }}
                             </div>
-                            <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-teal-400 border-2 border-white dark:border-stone-900 rounded-full"></div>
+                            <div class="absolute -top-1 -right-1 w-3 h-3 lg:w-3.5 lg:h-3.5 bg-teal-400 border-2 border-white dark:border-stone-900 rounded-full"></div>
                         </div>
                         <div class="text-left hidden md:block">
                             <p class="text-xs font-semibold leading-none text-stone-800 dark:text-stone-200 group-hover:translate-x-1 transition-transform duration-500">{{ $page.props.auth.user.name }}</p>
@@ -100,7 +122,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="animate-in fade-in zoom-in-95 duration-700">
+            <main class="animate-in fade-in zoom-in-95 duration-700 pb-6 lg:pb-0">
                 <slot />
             </main>
         </div>
@@ -108,7 +130,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { usePage, router, Link } from '@inertiajs/vue3';
 import {
     LayoutDashboard,
@@ -119,12 +141,15 @@ import {
     Target,
     ListTodo,
     Sun,
-    Moon
+    Moon,
+    Menu,
+    X
 } from 'lucide-vue-next';
 import { useDarkMode } from '@/composables/useDarkMode';
 
 const { isDark, toggle } = useDarkMode();
 const page = usePage();
+const sidebarOpen = ref(false);
 
 const navigation = [
     { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard, component: 'Student/Dashboard' },
@@ -149,6 +174,17 @@ const currentPageName = computed(() => {
 const initials = computed(() => {
     const name = page.props.auth.user.name;
     return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+});
+
+const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 1024) {
+        sidebarOpen.value = false;
+    }
+};
+
+// Close sidebar on route change (mobile)
+watch(() => page.url, () => {
+    sidebarOpen.value = false;
 });
 
 const logout = () => {
@@ -188,5 +224,15 @@ const logout = () => {
 
 .zoom-in-95 {
     animation-name: zoom-in;
+}
+
+/* Sidebar backdrop transition */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

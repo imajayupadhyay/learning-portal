@@ -1,4 +1,7 @@
 <template>
+    <Head title="Students">
+        <meta name="description" content="View and manage enrolled students and their progress." />
+    </Head>
     <AdminLayout>
         <div class="space-y-10 pb-12 relative">
             <!-- Page Header -->
@@ -321,7 +324,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { UserPlus, Search, Pencil, Trash2, Users, X, CheckCircle, XCircle, Clock, Eye, Phone, Mail, MapPin, GraduationCap, BookOpen, ListChecks, Github, Linkedin } from 'lucide-vue-next';
 

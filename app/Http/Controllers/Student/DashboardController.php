@@ -90,7 +90,17 @@ class DashboardController extends Controller
             }
         }
 
-        $courses = $query->get()->map(function ($course) use ($user) {
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $paginated = $query->latest()->paginate(12)->withQueryString();
+
+        $courses = $paginated->through(function ($course) use ($user) {
             $completedCount = LessonCompletion::where('user_id', $user->id)
                 ->whereIn('lesson_id', $course->lessons()->pluck('id'))
                 ->count();
@@ -132,6 +142,7 @@ class DashboardController extends Controller
             'courses' => $courses,
             'categories' => $categories,
             'activeCategory' => $request->category,
+            'search' => $request->search,
         ]);
     }
 

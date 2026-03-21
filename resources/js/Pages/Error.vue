@@ -1,4 +1,7 @@
 <template>
+    <Head :title="title">
+        <meta name="description" :content="description" />
+    </Head>
     <div class="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-red-50/30 flex items-center justify-center px-6 py-12 relative overflow-hidden">
         <!-- Background Decorative Elements -->
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-red-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -63,6 +66,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
     status: Number,

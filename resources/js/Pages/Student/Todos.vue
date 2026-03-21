@@ -1,15 +1,18 @@
 <template>
+    <Head title="Todos">
+        <meta name="description" content="Manage your learning tasks and stay organized with your todo list." />
+    </Head>
     <StudentLayout>
-        <div class="space-y-10 pb-12 relative">
+        <div class="space-y-6 lg:space-y-10 pb-8 lg:pb-12 relative">
             <!-- Filter Tabs -->
-            <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 lg:gap-3 flex-nowrap overflow-x-auto pb-2 lg:pb-0 lg:flex-wrap lg:overflow-visible scrollbar-hide">
                 <button v-for="f in filters" :key="f.key"
                     @click="changeFilter(f.key)"
                     :class="[
                         currentFilter === f.key
                             ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
                             : 'bg-white/60 dark:bg-stone-900/60 text-stone-500 dark:text-stone-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 border border-indigo-100/20 dark:border-stone-700/50',
-                        'px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center gap-2'
+                        'px-4 lg:px-6 py-2.5 lg:py-3 rounded-xl lg:rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center gap-2 whitespace-nowrap flex-shrink-0'
                     ]"
                 >
                     {{ f.label }}
@@ -24,7 +27,7 @@
             <div v-if="todos.length > 0" class="space-y-4">
                 <div v-for="todo in todos" :key="todo.id"
                     :class="[
-                        'group bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border rounded-[24px] p-6 md:p-8 transition-all duration-500 hover:shadow-lg relative overflow-hidden',
+                        'group bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border rounded-xl lg:rounded-[24px] p-4 md:p-6 lg:p-8 transition-all duration-500 hover:shadow-lg relative overflow-hidden',
                         todo.is_completed ? 'border-stone-100 dark:border-stone-800 opacity-70' : todo.is_overdue ? 'border-red-200 dark:border-red-900/50 hover:shadow-red-100/50 dark:hover:shadow-red-950/30' : 'border-indigo-100/20 dark:border-stone-700/50 hover:shadow-indigo-500/5 dark:hover:shadow-stone-950/30'
                     ]"
                 >
@@ -36,7 +39,7 @@
                         todo.priority === 'medium' ? 'bg-amber-500' : 'bg-teal-500'
                     ]"></div>
 
-                    <div class="flex items-start gap-5 ml-3">
+                    <div class="flex items-start gap-3 lg:gap-5 ml-2 lg:ml-3">
                         <!-- Checkbox -->
                         <button @click="toggleTodo(todo.id)"
                             :class="[
@@ -83,7 +86,7 @@
                             </div>
 
                             <!-- Meta Row -->
-                            <div class="flex items-center gap-3 mt-4 flex-wrap">
+                            <div class="flex items-center gap-2 lg:gap-3 mt-3 lg:mt-4 flex-wrap">
                                 <span :class="[
                                     'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest',
                                     todo.is_completed ? 'bg-stone-50 dark:bg-stone-800 text-stone-400 dark:text-stone-500' :
@@ -123,14 +126,14 @@
             </div>
 
             <!-- Empty State -->
-            <div v-else class="text-center py-20">
-                <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-950/50 rounded-[28px] flex items-center justify-center mx-auto mb-8 border border-indigo-100/30 dark:border-indigo-900/50">
-                    <ListTodo class="w-12 h-12 text-indigo-300 dark:text-indigo-600" />
+            <div v-else class="text-center py-12 lg:py-20">
+                <div class="w-20 h-20 lg:w-24 lg:h-24 bg-indigo-50 dark:bg-indigo-950/50 rounded-2xl lg:rounded-[28px] flex items-center justify-center mx-auto mb-6 lg:mb-8 border border-indigo-100/30 dark:border-indigo-900/50">
+                    <ListTodo class="w-10 h-10 lg:w-12 lg:h-12 text-indigo-300 dark:text-indigo-600" />
                 </div>
-                <h3 class="text-2xl font-heading font-extrabold tracking-tight mb-3 text-stone-800 dark:text-stone-100">
+                <h3 class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight mb-3 text-stone-800 dark:text-stone-100">
                     {{ currentFilter === 'all' ? 'No Todos Yet' : 'Nothing Here' }}
                 </h3>
-                <p class="text-stone-500 dark:text-stone-400 font-medium max-w-md mx-auto mb-8">
+                <p class="text-stone-500 dark:text-stone-400 font-medium max-w-md mx-auto mb-6 lg:mb-8 text-sm">
                     {{ currentFilter === 'all'
                         ? 'Create your first todo to start planning your learning journey.'
                         : 'No todos match this filter. Try a different one or create a new todo.' }}
@@ -143,18 +146,18 @@
             </div>
 
             <!-- Modal Overlay -->
-            <div v-if="showModal" class="fixed inset-0 flex items-center justify-center p-4" style="z-index: 60; left: 312px;">
-                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm rounded-l-[24px]" @click="closeModal"></div>
+            <div v-if="showModal" class="fixed inset-0 lg:left-[312px] flex items-center justify-center p-4 z-[60]">
+                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm lg:rounded-l-[24px]" @click="closeModal"></div>
 
-                <div class="relative bg-white dark:bg-stone-900 rounded-[32px] w-full max-w-lg shadow-2xl shadow-black/20 max-h-[90vh] overflow-y-auto">
-                    <div class="p-8 pb-0 flex items-center justify-between">
-                        <h2 class="text-2xl font-heading font-extrabold tracking-tight text-stone-800 dark:text-stone-100">{{ editingTodo ? 'Edit Todo' : 'New Todo' }}</h2>
+                <div class="relative bg-white dark:bg-stone-900 rounded-2xl lg:rounded-[32px] w-full max-w-lg shadow-2xl shadow-black/20 max-h-[90vh] overflow-y-auto">
+                    <div class="p-5 lg:p-8 pb-0 flex items-center justify-between">
+                        <h2 class="text-xl lg:text-2xl font-heading font-extrabold tracking-tight text-stone-800 dark:text-stone-100">{{ editingTodo ? 'Edit Todo' : 'New Todo' }}</h2>
                         <button @click="closeModal" class="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl transition-colors">
                             <X class="w-5 h-5 text-stone-400 dark:text-stone-500" />
                         </button>
                     </div>
 
-                    <form @submit.prevent="submitForm" class="p-8 space-y-6">
+                    <form @submit.prevent="submitForm" class="p-5 lg:p-8 space-y-5 lg:space-y-6">
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-[0.2em]">Title *</label>
                             <input v-model="form.title" type="text" required
@@ -213,13 +216,13 @@
                             </select>
                         </div>
 
-                        <div class="flex items-center gap-4 pt-2">
+                        <div class="flex items-center gap-3 lg:gap-4 pt-2">
                             <button type="submit" :disabled="form.processing"
-                                class="flex-1 py-4 bg-indigo-500 text-white rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-500 disabled:opacity-50">
+                                class="flex-1 py-3.5 lg:py-4 bg-indigo-500 text-white rounded-xl lg:rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-500 disabled:opacity-50">
                                 {{ form.processing ? 'Saving...' : editingTodo ? 'Save Changes' : 'Create Todo' }}
                             </button>
                             <button type="button" @click="closeModal"
-                                class="px-8 py-4 bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-stone-200 dark:hover:bg-stone-700 transition-all">
+                                class="px-6 lg:px-8 py-3.5 lg:py-4 bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 rounded-xl lg:rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-stone-200 dark:hover:bg-stone-700 transition-all">
                                 Cancel
                             </button>
                         </div>
@@ -232,7 +235,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import {
     Plus, Check, X, Pencil, Trash2,
@@ -328,3 +331,13 @@ const deleteTodo = (id) => {
     router.delete(`/student/todos/${id}`, { preserveScroll: true });
 };
 </script>
+
+<style scoped>
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>
