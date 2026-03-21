@@ -138,11 +138,53 @@ class DashboardController extends Controller
                 ];
             });
 
+        // Recent / Continue Learning courses
+        $recentCourseIds = LessonCompletion::where('user_id', $user->id)
+            ->latest('updated_at')
+            ->pluck('lesson_id');
+
+        $recentCourses = [];
+        if ($recentCourseIds->isNotEmpty()) {
+            $recentCourses = Course::withCount('lessons')
+                ->whereHas('lessons', function ($q) use ($recentCourseIds) {
+                    $q->whereIn('id', $recentCourseIds);
+                })
+                ->limit(6)
+                ->get()
+                ->map(function ($course) use ($user) {
+                    $completedCount = LessonCompletion::where('user_id', $user->id)
+                        ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                        ->count();
+                    $progress = $course->lessons_count > 0
+                        ? round(($completedCount / $course->lessons_count) * 100)
+                        : 0;
+
+                    $lastCompleted = LessonCompletion::where('user_id', $user->id)
+                        ->whereIn('lesson_id', $course->lessons()->pluck('id'))
+                        ->latest('updated_at')
+                        ->first();
+
+                    return [
+                        'id' => $course->id,
+                        'title' => $course->title,
+                        'image' => $course->image,
+                        'lessons_count' => $course->lessons_count,
+                        'completed_count' => $completedCount,
+                        'progress' => $progress,
+                        'last_accessed' => $lastCompleted?->updated_at?->diffForHumans(),
+                    ];
+                })
+                ->sortByDesc('last_accessed')
+                ->values()
+                ->toArray();
+        }
+
         return Inertia::render('Student/Courses', [
             'courses' => $courses,
             'categories' => $categories,
             'activeCategory' => $request->category,
             'search' => $request->search,
+            'recentCourses' => $recentCourses,
         ]);
     }
 

@@ -53,6 +53,41 @@
                 </button>
             </div>
 
+            <!-- Continue Learning -->
+            <div v-if="recentCourses.length > 0 && !searchQuery && !activeCategory" class="space-y-4 lg:space-y-5">
+                <div class="flex items-center justify-between px-1">
+                    <div class="flex items-center gap-2 lg:gap-3">
+                        <div class="w-1.5 h-6 lg:h-7 bg-indigo-500 rounded-full"></div>
+                        <h2 class="text-base lg:text-xl font-heading font-extrabold tracking-tight text-stone-800 dark:text-stone-100">Continue Learning</h2>
+                    </div>
+                    <span class="text-[9px] lg:text-[10px] font-bold uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500">{{ recentCourses.length }} Active</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
+                    <Link v-for="course in recentCourses" :key="course.id" :href="`/student/courses/${course.id}`"
+                        class="group flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-white/60 dark:bg-stone-900/60 backdrop-blur-xl border border-indigo-100/20 dark:border-stone-700/50 rounded-xl lg:rounded-2xl hover:shadow-lg hover:shadow-indigo-500/5 dark:hover:shadow-stone-950/20 transition-all duration-500 ring-1 ring-indigo-500/[0.02] dark:ring-stone-700/30">
+                        <div class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl lg:rounded-2xl overflow-hidden flex-shrink-0 ring-1 ring-black/5 dark:ring-white/5">
+                            <img :src="course.image" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-xs lg:text-sm font-heading font-bold tracking-tight text-stone-800 dark:text-stone-100 truncate group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">{{ course.title }}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] lg:text-[10px] font-bold uppercase tracking-widest text-stone-400 dark:text-stone-500">{{ course.completed_count }}/{{ course.lessons_count }} lessons</span>
+                                <span class="text-[9px] lg:text-[10px] text-stone-300 dark:text-stone-600">·</span>
+                                <span class="text-[9px] lg:text-[10px] font-medium text-stone-400 dark:text-stone-500">{{ course.last_accessed }}</span>
+                            </div>
+                            <div class="mt-2 h-1 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000"
+                                    :class="course.progress >= 100 ? 'bg-teal-500' : 'bg-indigo-500'"
+                                    :style="{ width: course.progress + '%' }"></div>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="text-[10px] lg:text-xs font-bold" :class="course.progress >= 100 ? 'text-teal-500' : 'text-indigo-500 dark:text-indigo-400'">{{ course.progress }}%</span>
+                        </div>
+                    </Link>
+                </div>
+            </div>
+
             <!-- Glass Course Grid -->
             <div v-if="courses.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5">
                 <div v-for="course in courses.data" :key="course.id"
@@ -155,13 +190,14 @@
 import { ref, computed, watch } from 'vue';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ArrowRight, Play, BookOpen, Search, X as XIcon } from 'lucide-vue-next';
+import { ArrowRight, Play, BookOpen, Search, X as XIcon, Clock } from 'lucide-vue-next';
 
 const props = defineProps({
     courses: Object,
     categories: Array,
     activeCategory: String,
     search: String,
+    recentCourses: Array,
 });
 
 const searchQuery = ref(props.search || '');
