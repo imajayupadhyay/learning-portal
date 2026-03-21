@@ -265,14 +265,21 @@ const toggleComplete = (lessonId) => {
     if (!lessonId || toggling.value) return;
     toggling.value = true;
 
+    const currentId = currentLesson.value?.id;
+
     router.post('/student/lessons/toggle-complete', {
         lesson_id: lessonId,
     }, {
         preserveScroll: true,
-        onSuccess: () => {
-            const lesson = props.course.lessons.find(l => l.id === lessonId);
-            if (lesson) {
-                lesson.completed = !lesson.completed;
+        preserveState: true,
+        onSuccess: (page) => {
+            // After Inertia reloads props, restore the current lesson
+            const freshLessons = page.props.course.lessons;
+            if (currentId) {
+                const restored = freshLessons.find(l => l.id === currentId);
+                if (restored) {
+                    currentLesson.value = restored;
+                }
             }
             toggling.value = false;
         },
