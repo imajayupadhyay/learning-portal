@@ -1,6 +1,18 @@
 <template>
-    <div class="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4 font-body">
+    <div class="min-h-screen bg-[#FAFAF9] dark:bg-stone-950 flex items-center justify-center px-4 font-body transition-colors duration-300">
         <div class="w-full max-w-md">
+            <!-- Dark Mode Toggle -->
+            <div class="flex justify-end mb-6">
+                <button @click="toggle" class="p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-all" :title="isDark ? 'Light mode' : 'Dark mode'">
+                    <svg v-if="isDark" class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg v-else class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+
             <!-- Brand -->
             <div class="text-center mb-10">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-500 rounded-2xl mb-6 shadow-lg shadow-indigo-500/20">
@@ -9,45 +21,45 @@
                             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                 </div>
-                <h1 class="text-3xl font-heading font-extrabold text-stone-800 tracking-tight">LMS Student</h1>
-                <p class="text-stone-500 mt-2 text-sm">Access your learning portal</p>
+                <h1 class="text-3xl font-heading font-extrabold text-stone-800 dark:text-stone-100 tracking-tight">LMS Student</h1>
+                <p class="text-stone-500 dark:text-stone-400 mt-2 text-sm">Access your learning portal</p>
             </div>
 
             <!-- Registration Pending Message -->
-            <div v-if="registeredMessage" class="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div v-if="registeredMessage" class="mb-6 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl">
                 <div class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
                     <div>
-                        <p class="text-sm font-bold text-amber-800">Registration Pending</p>
-                        <p class="text-sm text-amber-700 mt-1">{{ registeredMessage }}</p>
+                        <p class="text-sm font-bold text-amber-800 dark:text-amber-300">Registration Pending</p>
+                        <p class="text-sm text-amber-700 dark:text-amber-400 mt-1">{{ registeredMessage }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Approval Error Message -->
-            <div v-if="loginForm.errors.approval" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <div v-if="loginForm.errors.approval" class="mb-6 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl">
                 <div class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
-                        <p class="text-sm font-bold text-red-800">Account Not Approved</p>
-                        <p class="text-sm text-red-700 mt-1">{{ loginForm.errors.approval }}</p>
+                        <p class="text-sm font-bold text-red-800 dark:text-red-300">Account Not Approved</p>
+                        <p class="text-sm text-red-700 dark:text-red-400 mt-1">{{ loginForm.errors.approval }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Tab Switcher -->
-            <div class="flex bg-indigo-50 rounded-xl p-1 mb-8">
+            <div class="flex bg-indigo-50 dark:bg-stone-800 rounded-xl p-1 mb-8">
                 <button
                     @click="activeTab = 'login'"
                     :class="[
                         'flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                         activeTab === 'login'
                             ? 'bg-indigo-500 text-white shadow-sm'
-                            : 'text-stone-500 hover:text-indigo-500'
+                            : 'text-stone-500 dark:text-stone-400 hover:text-indigo-500 dark:hover:text-indigo-400'
                     ]"
                 >
                     Sign In
@@ -58,7 +70,7 @@
                         'flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                         activeTab === 'register'
                             ? 'bg-indigo-500 text-white shadow-sm'
-                            : 'text-stone-500 hover:text-indigo-500'
+                            : 'text-stone-500 dark:text-stone-400 hover:text-indigo-500 dark:hover:text-indigo-400'
                     ]"
                 >
                     Register
@@ -68,7 +80,7 @@
             <!-- Login Form -->
             <form v-if="activeTab === 'login'" @submit.prevent="submitLogin" class="space-y-5">
                 <div>
-                    <label for="login-email" class="block text-sm font-medium text-stone-700 mb-2">Email</label>
+                    <label for="login-email" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Email</label>
                     <input
                         id="login-email"
                         v-model="loginForm.email"
@@ -76,8 +88,8 @@
                         autocomplete="email"
                         required
                         :class="[
-                            'w-full px-4 py-3 bg-stone-50 border rounded-xl text-stone-800 placeholder-stone-400 outline-none transition-all duration-200',
-                            loginForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-stone-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
+                            'w-full px-4 py-3 bg-stone-50 dark:bg-stone-800 border rounded-xl text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600 outline-none transition-all duration-200',
+                            loginForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900' : 'border-stone-200 dark:border-stone-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900'
                         ]"
                         placeholder="you@example.com"
                     />
@@ -85,7 +97,7 @@
                 </div>
 
                 <div>
-                    <label for="login-password" class="block text-sm font-medium text-stone-700 mb-2">Password</label>
+                    <label for="login-password" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Password</label>
                     <div class="relative">
                         <input
                             id="login-password"
@@ -93,11 +105,11 @@
                             :type="showLoginPassword ? 'text' : 'password'"
                             autocomplete="current-password"
                             required
-                            class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-800 placeholder-stone-400 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 pr-12"
+                            class="w-full px-4 py-3 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 pr-12"
                             placeholder="Enter your password"
                         />
                         <button type="button" @click="showLoginPassword = !showLoginPassword"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-indigo-500 transition-colors">
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 dark:text-stone-500 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
                             <svg v-if="!showLoginPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -112,8 +124,8 @@
 
                 <div class="flex items-center">
                     <input id="remember" v-model="loginForm.remember" type="checkbox"
-                        class="w-4 h-4 rounded border-stone-300 text-indigo-500 focus:ring-indigo-500 accent-indigo-500" />
-                    <label for="remember" class="ml-2 text-sm text-stone-600">Remember me</label>
+                        class="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-indigo-500 focus:ring-indigo-500 accent-indigo-500" />
+                    <label for="remember" class="ml-2 text-sm text-stone-600 dark:text-stone-400">Remember me</label>
                 </div>
 
                 <button type="submit" :disabled="loginForm.processing"
@@ -132,7 +144,7 @@
             <!-- Register Form -->
             <form v-if="activeTab === 'register'" @submit.prevent="submitRegister" class="space-y-5">
                 <div>
-                    <label for="reg-name" class="block text-sm font-medium text-stone-700 mb-2">Full Name</label>
+                    <label for="reg-name" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Full Name</label>
                     <input
                         id="reg-name"
                         v-model="registerForm.name"
@@ -140,8 +152,8 @@
                         autocomplete="name"
                         required
                         :class="[
-                            'w-full px-4 py-3 bg-stone-50 border rounded-xl text-stone-800 placeholder-stone-400 outline-none transition-all duration-200',
-                            registerForm.errors.name ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-stone-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
+                            'w-full px-4 py-3 bg-stone-50 dark:bg-stone-800 border rounded-xl text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600 outline-none transition-all duration-200',
+                            registerForm.errors.name ? 'border-red-400 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900' : 'border-stone-200 dark:border-stone-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900'
                         ]"
                         placeholder="John Doe"
                     />
@@ -149,7 +161,7 @@
                 </div>
 
                 <div>
-                    <label for="reg-email" class="block text-sm font-medium text-stone-700 mb-2">Email</label>
+                    <label for="reg-email" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Email</label>
                     <input
                         id="reg-email"
                         v-model="registerForm.email"
@@ -157,8 +169,8 @@
                         autocomplete="email"
                         required
                         :class="[
-                            'w-full px-4 py-3 bg-stone-50 border rounded-xl text-stone-800 placeholder-stone-400 outline-none transition-all duration-200',
-                            registerForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-stone-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
+                            'w-full px-4 py-3 bg-stone-50 dark:bg-stone-800 border rounded-xl text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600 outline-none transition-all duration-200',
+                            registerForm.errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900' : 'border-stone-200 dark:border-stone-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900'
                         ]"
                         placeholder="you@example.com"
                     />
@@ -166,7 +178,7 @@
                 </div>
 
                 <div>
-                    <label for="reg-password" class="block text-sm font-medium text-stone-700 mb-2">Password</label>
+                    <label for="reg-password" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Password</label>
                     <div class="relative">
                         <input
                             id="reg-password"
@@ -174,11 +186,11 @@
                             :type="showRegPassword ? 'text' : 'password'"
                             autocomplete="new-password"
                             required
-                            class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-800 placeholder-stone-400 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 pr-12"
+                            class="w-full px-4 py-3 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 pr-12"
                             placeholder="Min. 8 characters"
                         />
                         <button type="button" @click="showRegPassword = !showRegPassword"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-indigo-500 transition-colors">
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 dark:text-stone-500 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
                             <svg v-if="!showRegPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -192,14 +204,14 @@
                 </div>
 
                 <div>
-                    <label for="reg-password-confirm" class="block text-sm font-medium text-stone-700 mb-2">Confirm Password</label>
+                    <label for="reg-password-confirm" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Confirm Password</label>
                     <input
                         id="reg-password-confirm"
                         v-model="registerForm.password_confirmation"
                         type="password"
                         autocomplete="new-password"
                         required
-                        class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-stone-800 placeholder-stone-400 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                        class="w-full px-4 py-3 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
                         placeholder="Confirm your password"
                     />
                 </div>
@@ -217,7 +229,7 @@
                 </button>
             </form>
 
-            <p class="text-center text-stone-400 text-xs mt-10">LMS &mdash; Learning Management System</p>
+            <p class="text-center text-stone-400 dark:text-stone-600 text-xs mt-10">LMS &mdash; Learning Management System</p>
         </div>
     </div>
 </template>
@@ -225,7 +237,9 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import { useDarkMode } from '@/composables/useDarkMode';
 
+const { isDark, toggle } = useDarkMode();
 const page = usePage();
 const activeTab = ref('login');
 const registeredMessage = computed(() => page.props.flash?.registered || null);
