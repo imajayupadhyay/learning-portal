@@ -1,22 +1,6 @@
 <template>
     <StudentLayout>
         <div class="space-y-10 pb-12 relative">
-            <!-- Page Header -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                <div class="max-w-2xl">
-                    <h1 class="text-5xl font-black tracking-tighter italic mb-4">My Todos.</h1>
-                    <p class="text-neutral-500 text-lg font-medium leading-relaxed">
-                        Plan your learning schedule, link tasks to courses, and
-                        <span class="text-red-600 font-bold border-b-2 border-red-200">stay on track.</span>
-                    </p>
-                </div>
-                <button @click="openCreate"
-                    class="flex items-center gap-3 px-8 py-4 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-xl hover:shadow-red-600/20 transition-all duration-500 shrink-0">
-                    <Plus class="w-4 h-4" />
-                    New Todo
-                </button>
-            </div>
-
             <!-- Filter Tabs -->
             <div class="flex items-center gap-3 flex-wrap">
                 <button v-for="f in filters" :key="f.key"

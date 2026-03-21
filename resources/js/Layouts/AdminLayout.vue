@@ -107,6 +107,7 @@ import {
     Users,
     ShieldCheck,
     BookOpen,
+    FolderTree,
     LogOut,
     ChevronRight
 } from 'lucide-vue-next';
@@ -116,6 +117,7 @@ const page = usePage();
 const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, component: 'Admin/Dashboard' },
     { name: 'Courses', href: '/admin/courses', icon: BookOpen, component: 'Admin/Courses' },
+    { name: 'Categories', href: '/admin/categories', icon: FolderTree, component: 'Admin/Categories' },
     { name: 'Students', href: '/admin/students', icon: Users, component: 'Admin/Students' },
     { name: 'Admins', href: '/admin/admins', icon: ShieldCheck, component: 'Admin/Admins' },
 ];

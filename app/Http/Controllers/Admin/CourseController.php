@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
@@ -24,21 +25,28 @@ class CourseController extends Controller
             });
         }
 
-        $courses = $query->latest()->get()->map(function ($course) {
+        $courses = $query->latest()->with('category')->get()->map(function ($course) {
             return [
                 'id' => $course->id,
                 'title' => $course->title,
                 'description' => $course->description,
                 'instructor' => $course->instructor,
                 'image' => $course->image,
+                'category_id' => $course->category_id,
+                'category_name' => $course->category?->name,
                 'lessons_count' => $course->lessons_count,
                 'created_at' => $course->created_at->format('M d, Y'),
             ];
         });
 
+        $categories = $this->getFlatCategoryList(
+            Category::whereNull('parent_id')->with('descendants')->orderBy('sort_order')->get()
+        );
+
         return Inertia::render('Admin/Courses', [
             'courses' => $courses,
             'search' => $search,
+            'categories' => $categories,
         ]);
     }
 
@@ -48,11 +56,13 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
             'instructor' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url' => 'nullable|string|max:500',
         ]);
 
         $data = $request->only('title', 'description', 'instructor');
+        $data['category_id'] = $request->category_id ?: null;
 
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('courses', 'public');
@@ -72,11 +82,13 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
             'instructor' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url' => 'nullable|string|max:500',
         ]);
 
         $data = $request->only('title', 'description', 'instructor');
+        $data['category_id'] = $request->category_id ?: null;
 
         if ($request->hasFile('image_file')) {
             // Delete old uploaded image if exists
@@ -176,5 +188,17 @@ class CourseController extends Controller
         $lesson->delete();
 
         return back();
+    }
+
+    private function getFlatCategoryList($categories, $depth = 0): array
+    {
+        $result = [];
+        foreach ($categories as $cat) {
+            $result[] = ['id' => $cat->id, 'name' => str_repeat('— ', $depth) . $cat->name, 'depth' => $depth];
+            if ($cat->descendants && $cat->descendants->count()) {
+                $result = array_merge($result, $this->getFlatCategoryList($cat->descendants, $depth + 1));
+            }
+        }
+        return $result;
     }
 }

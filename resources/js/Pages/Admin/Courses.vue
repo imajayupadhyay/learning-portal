@@ -49,8 +49,9 @@
                         <h3 class="text-base font-black tracking-tight leading-tight mb-1.5">{{ course.title }}</h3>
                         <p class="text-neutral-500 text-xs font-medium line-clamp-2 mb-3">{{ course.description || 'No description provided.' }}</p>
 
-                        <div class="flex items-center gap-2 mb-4">
+                        <div class="flex items-center gap-2 flex-wrap mb-4">
                             <span class="px-2.5 py-0.5 bg-red-50 text-red-600 rounded-lg text-[9px] font-black uppercase tracking-widest">{{ course.instructor }}</span>
+                            <span v-if="course.category_name" class="px-2.5 py-0.5 bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black uppercase tracking-widest">{{ course.category_name }}</span>
                             <span class="text-[9px] font-bold text-neutral-400 tracking-wide">{{ course.created_at }}</span>
                         </div>
 
@@ -113,6 +114,14 @@
                                     class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all"
                                     placeholder="Instructor name" />
                                 <p v-if="formErrors.instructor" class="text-sm text-red-500">{{ formErrors.instructor }}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Category</label>
+                                <select v-model="form.category_id"
+                                    class="w-full px-5 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-black font-medium focus:ring-2 focus:ring-red-600 focus:border-red-600 outline-none transition-all">
+                                    <option :value="null">No Category</option>
+                                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                </select>
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[10px] font-black text-neutral-400 uppercase tracking-[0.2em]">Course Image</label>
@@ -190,6 +199,7 @@ import { Plus, Search, BookOpen, ListVideo, Pencil, Trash2, X, Upload, LinkIcon 
 const props = defineProps({
     courses: Array,
     search: String,
+    categories: Array,
 });
 
 const showModal = ref(false);
@@ -205,6 +215,7 @@ const form = useForm({
     title: '',
     description: '',
     instructor: '',
+    category_id: null,
     image_file: null,
     image_url: '',
 });
@@ -244,6 +255,7 @@ const openEdit = (course) => {
     form.title = course.title;
     form.description = course.description || '';
     form.instructor = course.instructor;
+    form.category_id = course.category_id || null;
     form.image_file = null;
     form.image_url = course.image || '';
     form.clearErrors();
@@ -267,6 +279,7 @@ const submitForm = () => {
     formData.append('title', form.title);
     formData.append('description', form.description || '');
     formData.append('instructor', form.instructor);
+    if (form.category_id) formData.append('category_id', form.category_id);
 
     if (imageMode.value === 'upload' && form.image_file) {
         formData.append('image_file', form.image_file);

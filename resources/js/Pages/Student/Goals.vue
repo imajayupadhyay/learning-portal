@@ -1,22 +1,6 @@
 <template>
     <StudentLayout>
         <div class="space-y-12 pb-12">
-            <!-- Page Header -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
-                <div class="max-w-2xl">
-                    <h1 class="text-5xl font-black tracking-tighter italic mb-6">My Goals.</h1>
-                    <p class="text-neutral-500 text-lg font-medium leading-relaxed">
-                        Select courses to track your progress. Mark lessons complete as you go and
-                        <span class="text-red-600 font-bold border-b-2 border-red-200">watch your journey unfold.</span>
-                    </p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="px-6 py-3 bg-red-50 border border-red-100 rounded-2xl">
-                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-red-600">{{ goalCourses.length }} Active Goals</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Active Goals Section -->
             <div v-if="goalCourses.length > 0" class="space-y-8">
                 <div class="flex items-center justify-between px-2">

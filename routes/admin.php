@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -35,6 +36,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/courses/{course}/lessons', [CourseController::class, 'storeLesson'])->name('admin.courses.lessons.store');
     Route::put('/courses/{course}/lessons/{lesson}', [CourseController::class, 'updateLesson'])->name('admin.courses.lessons.update');
     Route::delete('/courses/{course}/lessons/{lesson}', [CourseController::class, 'destroyLesson'])->name('admin.courses.lessons.destroy');
+
+    // Categories CRUD
+    Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
     // Admins CRUD
     Route::get('/admins', [AdminController::class, 'index'])->name('admin.admins');

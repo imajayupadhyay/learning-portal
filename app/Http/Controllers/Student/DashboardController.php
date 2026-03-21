@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\LessonCompletion;
 use Illuminate\Http\Request;
@@ -77,10 +78,19 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function courses()
+    public function courses(Request $request)
     {
-        $user = request()->user();
-        $courses = Course::withCount('lessons')->get()->map(function ($course) use ($user) {
+        $user = $request->user();
+        $query = Course::withCount('lessons')->with('category');
+
+        if ($request->filled('category')) {
+            $category = Category::where('slug', $request->category)->first();
+            if ($category) {
+                $query->whereIn('category_id', $category->getAllDescendantIds());
+            }
+        }
+
+        $courses = $query->get()->map(function ($course) use ($user) {
             $completedCount = LessonCompletion::where('user_id', $user->id)
                 ->whereIn('lesson_id', $course->lessons()->pluck('id'))
                 ->count();
@@ -94,12 +104,34 @@ class DashboardController extends Controller
                 'description' => $course->description,
                 'image' => $course->image,
                 'lessons_count' => $course->lessons_count,
+                'category_name' => $course->category?->name,
                 'progress' => $progress,
             ];
         });
 
+        $categories = Category::whereNull('parent_id')
+            ->with('children')
+            ->withCount('courses')
+            ->orderBy('sort_order')
+            ->get()
+            ->map(function ($cat) {
+                return [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                    'courses_count' => $cat->courses_count,
+                    'children' => $cat->children->map(fn ($child) => [
+                        'id' => $child->id,
+                        'name' => $child->name,
+                        'slug' => $child->slug,
+                    ]),
+                ];
+            });
+
         return Inertia::render('Student/Courses', [
             'courses' => $courses,
+            'categories' => $categories,
+            'activeCategory' => $request->category,
         ]);
     }
 

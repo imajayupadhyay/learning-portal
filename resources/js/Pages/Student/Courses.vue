@@ -1,23 +1,29 @@
 <template>
     <StudentLayout>
         <div class="space-y-12 pb-12">
-            <!-- Glass Header -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
-                <div class="max-w-2xl">
-                    <h1 class="text-5xl font-black tracking-tighter italic mb-6">Course Library.</h1>
-                    <p class="text-neutral-500 text-lg font-medium leading-relaxed">
-                        Precision-engineered curriculum for the next generation of 
-                        <span class="text-red-600 font-bold border-b-2 border-red-200">DevOps professionals.</span>
-                    </p>
-                </div>
-                <div class="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 rounded-[24px] border border-white shadow-sm">
-                    <button class="px-8 py-3 bg-red-600 text-white rounded-[20px] text-[10px] font-black uppercase tracking-widest shadow-xl shadow-red-600/20 transition-all">All Modules</button>
-                    <button class="px-8 py-3 text-neutral-400 hover:text-black rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all">Latest</button>
-                </div>
+            <!-- Category Filter -->
+            <div class="flex items-center gap-3 flex-wrap bg-white/50 backdrop-blur-md p-2 rounded-[24px] border border-white shadow-sm">
+                <button @click="filterCategory(null)"
+                    :class="!activeCategory ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'text-neutral-400 hover:text-black hover:bg-white/60'"
+                    class="px-6 py-2.5 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all">
+                    All
+                </button>
+                <template v-for="cat in categories" :key="cat.id">
+                    <button @click="filterCategory(cat.slug)"
+                        :class="activeCategory === cat.slug ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'text-neutral-400 hover:text-black hover:bg-white/60'"
+                        class="px-6 py-2.5 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all">
+                        {{ cat.name }}
+                    </button>
+                    <button v-for="child in cat.children" :key="child.id" @click="filterCategory(child.slug)"
+                        :class="activeCategory === child.slug ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'text-neutral-500 hover:text-black hover:bg-white/60'"
+                        class="px-5 py-2 rounded-[16px] text-[9px] font-bold uppercase tracking-widest transition-all border border-neutral-100">
+                        {{ child.name }}
+                    </button>
+                </template>
             </div>
 
             <!-- Glass Course Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div v-if="courses.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 <div v-for="course in courses" :key="course.id"
                     class="group bg-white/60 backdrop-blur-xl border border-white rounded-[24px] overflow-hidden hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col h-full ring-1 ring-black/[0.02]">
 
@@ -26,7 +32,7 @@
                         <img :src="course.image" class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-20 transition-opacity"></div>
 
-                        <div class="absolute top-3 left-3">
+                        <div class="absolute top-3 left-3 flex items-center gap-2">
                             <div class="px-2.5 py-1 bg-white/90 backdrop-blur-xl rounded-lg shadow-sm border border-white">
                                 <span class="text-[8px] font-black uppercase tracking-[0.2em] text-black">
                                     {{ course.lessons_count }} Lessons
@@ -46,7 +52,9 @@
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="w-1.5 h-1.5 rounded-full bg-red-600 group-hover:animate-ping"></span>
-                                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-neutral-400 group-hover:text-red-600 transition-colors">Core Curriculum</span>
+                                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-neutral-400 group-hover:text-red-600 transition-colors">
+                                    {{ course.category_name || 'Uncategorized' }}
+                                </span>
                             </div>
                             <h3 class="text-sm font-black tracking-tight leading-snug mb-2 group-hover:translate-x-0.5 transition-transform duration-500">{{ course.title }}</h3>
                             <p class="text-neutral-500 text-xs font-medium line-clamp-2 leading-relaxed mb-4">{{ course.description }}</p>
@@ -75,16 +83,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Empty State -->
+            <div v-else class="text-center py-20">
+                <div class="w-24 h-24 bg-red-50 rounded-[28px] flex items-center justify-center mx-auto mb-8 border border-red-100">
+                    <BookOpen class="w-12 h-12 text-red-300" />
+                </div>
+                <h3 class="text-2xl font-black tracking-tight mb-3">No Courses Found</h3>
+                <p class="text-neutral-500 font-medium max-w-md mx-auto">No courses match this category filter.</p>
+                <button @click="filterCategory(null)" class="mt-6 px-8 py-3 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-700 transition-all">
+                    View All Courses
+                </button>
+            </div>
         </div>
     </StudentLayout>
 </template>
 
 <script setup>
 import StudentLayout from '@/Layouts/StudentLayout.vue';
-import { Link } from '@inertiajs/vue3';
-import { ArrowRight, Play } from 'lucide-vue-next';
+import { Link, router } from '@inertiajs/vue3';
+import { ArrowRight, Play, BookOpen } from 'lucide-vue-next';
 
-defineProps({
+const props = defineProps({
     courses: Array,
+    categories: Array,
+    activeCategory: String,
 });
+
+const filterCategory = (slug) => {
+    router.get('/student/courses', slug ? { category: slug } : {}, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
 </script>
