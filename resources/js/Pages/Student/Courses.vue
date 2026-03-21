@@ -2,21 +2,21 @@
     <StudentLayout>
         <div class="space-y-12 pb-12">
             <!-- Category Filter -->
-            <div class="flex items-center gap-3 flex-wrap bg-white/50 backdrop-blur-md p-2 rounded-[24px] border border-white shadow-sm">
+            <div class="flex items-center gap-3 flex-wrap bg-white/50 backdrop-blur-md p-2 rounded-[24px] border border-indigo-100/20 shadow-sm">
                 <button @click="filterCategory(null)"
-                    :class="!activeCategory ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'text-neutral-400 hover:text-black hover:bg-white/60'"
-                    class="px-6 py-2.5 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all">
+                    :class="!activeCategory ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20' : 'text-stone-400 hover:text-stone-700 hover:bg-white/60'"
+                    class="px-6 py-2.5 rounded-[18px] text-[10px] font-bold uppercase tracking-widest transition-all">
                     All
                 </button>
                 <template v-for="cat in categories" :key="cat.id">
                     <button @click="filterCategory(cat.slug)"
-                        :class="activeCategory === cat.slug ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'text-neutral-400 hover:text-black hover:bg-white/60'"
-                        class="px-6 py-2.5 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all">
+                        :class="activeCategory === cat.slug ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20' : 'text-stone-400 hover:text-stone-700 hover:bg-white/60'"
+                        class="px-6 py-2.5 rounded-[18px] text-[10px] font-bold uppercase tracking-widest transition-all">
                         {{ cat.name }}
                     </button>
                     <button v-for="child in cat.children" :key="child.id" @click="filterCategory(child.slug)"
-                        :class="activeCategory === child.slug ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'text-neutral-500 hover:text-black hover:bg-white/60'"
-                        class="px-5 py-2 rounded-[16px] text-[9px] font-bold uppercase tracking-widest transition-all border border-neutral-100">
+                        :class="activeCategory === child.slug ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20' : 'text-stone-500 hover:text-stone-700 hover:bg-white/60'"
+                        class="px-5 py-2 rounded-[16px] text-[9px] font-bold uppercase tracking-widest transition-all border border-stone-100">
                         {{ child.name }}
                     </button>
                 </template>
@@ -25,7 +25,7 @@
             <!-- Glass Course Grid -->
             <div v-if="courses.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 <div v-for="course in courses" :key="course.id"
-                    class="group bg-white/60 backdrop-blur-xl border border-white rounded-[24px] overflow-hidden hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col h-full ring-1 ring-black/[0.02]">
+                    class="group bg-white/60 backdrop-blur-xl border border-indigo-100/20 rounded-[24px] overflow-hidden hover:shadow-[0_20px_40px_-12px_rgba(99,102,241,0.1)] transition-all duration-700 flex flex-col h-full ring-1 ring-indigo-500/[0.02]">
 
                     <!-- Media Area -->
                     <div class="aspect-[16/10] overflow-hidden relative">
@@ -34,7 +34,7 @@
 
                         <div class="absolute top-3 left-3 flex items-center gap-2">
                             <div class="px-2.5 py-1 bg-white/90 backdrop-blur-xl rounded-lg shadow-sm border border-white">
-                                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-black">
+                                <span class="text-[8px] font-bold uppercase tracking-[0.2em] text-stone-700">
                                     {{ course.lessons_count }} Lessons
                                 </span>
                             </div>
@@ -42,7 +42,7 @@
 
                         <div class="absolute bottom-3 right-3 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                             <div class="w-9 h-9 bg-white rounded-xl flex items-center justify-center shadow-xl">
-                                <Play class="w-3.5 h-3.5 fill-black" />
+                                <Play class="w-3.5 h-3.5 fill-stone-800" />
                             </div>
                         </div>
                     </div>
@@ -51,31 +51,31 @@
                     <div class="p-4 flex-1 flex flex-col justify-between relative">
                         <div>
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-600 group-hover:animate-ping"></span>
-                                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-neutral-400 group-hover:text-red-600 transition-colors">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 group-hover:animate-ping"></span>
+                                <span class="text-[8px] font-bold uppercase tracking-[0.2em] text-stone-400 group-hover:text-indigo-500 transition-colors">
                                     {{ course.category_name || 'Uncategorized' }}
                                 </span>
                             </div>
-                            <h3 class="text-sm font-black tracking-tight leading-snug mb-2 group-hover:translate-x-0.5 transition-transform duration-500">{{ course.title }}</h3>
-                            <p class="text-neutral-500 text-xs font-medium line-clamp-2 leading-relaxed mb-4">{{ course.description }}</p>
+                            <h3 class="text-sm font-heading font-extrabold tracking-tight leading-snug mb-2 text-stone-800 group-hover:translate-x-0.5 transition-transform duration-500">{{ course.title }}</h3>
+                            <p class="text-stone-500 text-xs font-medium line-clamp-2 leading-relaxed mb-4">{{ course.description }}</p>
                         </div>
 
-                        <div class="space-y-3 pt-3 border-t border-black/5">
+                        <div class="space-y-3 pt-3 border-t border-stone-100/50">
                             <div>
                                 <div class="flex items-center justify-between mb-1.5">
-                                    <span class="text-[8px] font-black uppercase tracking-[0.2em]" :class="course.progress >= 100 ? 'text-emerald-600' : course.progress > 0 ? 'text-red-600' : 'text-neutral-400'">
+                                    <span class="text-[8px] font-bold uppercase tracking-[0.2em]" :class="course.progress >= 100 ? 'text-teal-500' : course.progress > 0 ? 'text-indigo-500' : 'text-stone-400'">
                                         {{ course.progress >= 100 ? 'Completed' : course.progress > 0 ? 'In Progress' : 'Not Started' }}
                                     </span>
-                                    <span class="text-[9px] font-black" :class="course.progress >= 100 ? 'text-emerald-600' : 'text-neutral-600'">{{ course.progress }}%</span>
+                                    <span class="text-[9px] font-bold" :class="course.progress >= 100 ? 'text-teal-500' : 'text-stone-600'">{{ course.progress }}%</span>
                                 </div>
-                                <div class="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                                <div class="h-1.5 bg-stone-100 rounded-full overflow-hidden">
                                     <div class="h-full rounded-full transition-all duration-1000"
-                                        :class="course.progress >= 100 ? 'bg-emerald-500' : 'bg-red-600'"
+                                        :class="course.progress >= 100 ? 'bg-teal-500' : 'bg-indigo-500'"
                                         :style="{ width: (course.progress || 0) + '%' }"></div>
                                 </div>
                             </div>
 
-                            <Link :href="`/student/courses/${course.id}`" class="w-full flex items-center justify-center gap-2 py-3 bg-red-600 text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-xl hover:shadow-red-600/20 transition-all duration-500 group-hover:-translate-y-0.5">
+                            <Link :href="`/student/courses/${course.id}`" class="w-full flex items-center justify-center gap-2 py-3 bg-indigo-500 text-white rounded-xl text-[9px] font-bold uppercase tracking-[0.3em] hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-500 group-hover:-translate-y-0.5">
                                 {{ course.progress >= 100 ? 'Review' : course.progress > 0 ? 'Resume' : 'Start' }}
                                 <ArrowRight class="w-3.5 h-3.5" />
                             </Link>
@@ -86,12 +86,12 @@
 
             <!-- Empty State -->
             <div v-else class="text-center py-20">
-                <div class="w-24 h-24 bg-red-50 rounded-[28px] flex items-center justify-center mx-auto mb-8 border border-red-100">
-                    <BookOpen class="w-12 h-12 text-red-300" />
+                <div class="w-24 h-24 bg-indigo-50 rounded-[28px] flex items-center justify-center mx-auto mb-8 border border-indigo-100/30">
+                    <BookOpen class="w-12 h-12 text-indigo-300" />
                 </div>
-                <h3 class="text-2xl font-black tracking-tight mb-3">No Courses Found</h3>
-                <p class="text-neutral-500 font-medium max-w-md mx-auto">No courses match this category filter.</p>
-                <button @click="filterCategory(null)" class="mt-6 px-8 py-3 bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-700 transition-all">
+                <h3 class="text-2xl font-heading font-extrabold tracking-tight mb-3 text-stone-800">No Courses Found</h3>
+                <p class="text-stone-500 font-medium max-w-md mx-auto">No courses match this category filter.</p>
+                <button @click="filterCategory(null)" class="mt-6 px-8 py-3 bg-indigo-500 text-white rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all">
                     View All Courses
                 </button>
             </div>
